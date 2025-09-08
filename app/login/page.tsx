@@ -27,28 +27,32 @@ export default function LoginPage() {
   }
 
   return (
-    <div>
-      <div>
-        <h1>Login</h1>
-        <form onSubmit={handlerSubmit}>
+    <div className="min-h-screen flex items-center justify-center bg-stone-100">
+      <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+        <form onSubmit={handlerSubmit} className="space-y-4">
           <input
-            type="text"
-            name="email"
+            type="email"
             placeholder="Email"
+            className="w-full border rounded px-4 py-2"
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
-            name="password"
             placeholder="Senha"
+            className="w-full border rounded px-4 py-2"
             onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <p>{error}</p>}
-          <button>Login</button>
+          {error && <p className="text-red-500">{error}</p>}
+          <button className="w-full bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600 duration-300 cursor-pointer">
+            Entrar
+          </button>
         </form>
-        <div>
-          <button>Esqueceu a senha?</button>
-          <button>
+        <div className="text-center mt-4 space-x-5">
+          <button className="text-blue-700 hover:underline cursor-pointer">
+            Esqueceu a senha?
+          </button>
+          <button className="text-blue-700 hover:underline cursor-pointer">
             <Link href="/register-store">Cadastrar loja</Link>
           </button>
         </div>
