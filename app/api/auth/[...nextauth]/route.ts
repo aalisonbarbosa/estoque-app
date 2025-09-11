@@ -18,12 +18,12 @@ export const auth = NextAuth({
 
       const isValid = await bcrypt.compare(credentials.password, user.password);
       if (!isValid) return null;
-      
+
       return {
         id: user.id,
-        name: user.name ?? "No Name",
-        email: user.email ?? "",
-        role: user.role ?? "EMPLOYEE",
+        name: user.name!,
+        email: user.email!,
+        role: user.role!,
       };
     },
   }),],

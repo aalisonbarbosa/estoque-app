@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Providers } from "./providers";
+import { Sidebar } from "@/components/Sidebar";
 
 export const metadata: Metadata = {
   title: "Estoque App",
@@ -16,7 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-       <Providers>{children}</Providers>
+        <Providers>
+          <div className="min-h-screen bg-gray-100 flex">
+            <Sidebar />
+            <main className="w-full">{children}</main>
+          </div>
+        </Providers>
       </body>
     </html>
   );

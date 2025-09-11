@@ -62,7 +62,7 @@ export default function RegisterStorePage() {
 
       console.log("Loja registrada com sucesso!");
 
-      router.push("/");
+      router.push("/login");
     } catch (err: any) {
       setErrorMessage(
         "Erro inesperado no servidor. Tente novamente mais tarde."
