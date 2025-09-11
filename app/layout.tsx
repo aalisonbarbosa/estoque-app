@@ -20,7 +20,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen bg-gray-100 flex">
             <Sidebar />
-            <main className="w-full">{children}</main>
+            <main className="w-full p-4">{children}</main>
           </div>
         </Providers>
       </body>
