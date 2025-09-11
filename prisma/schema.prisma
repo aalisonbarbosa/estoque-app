@@ -93,6 +93,7 @@ model Movement {
   quantity     Int
   movementType String
   date         DateTime @default(now())
+  userId       String
 }
 
 model Category {
