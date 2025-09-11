@@ -3,16 +3,10 @@ import { createContext, useContext } from "react";
 import { useSession } from "next-auth/react";
 
 type AuthContextType = {
-  role: string | null;
   isAdmin: boolean;
-  isEmployee: boolean;
 };
 
-const AuthContext = createContext<AuthContextType>({
-  role: null,
-  isAdmin: false,
-  isEmployee: false,
-});
+const AuthContext = createContext<AuthContextType>({ isAdmin: false });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -22,9 +16,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        role,
         isAdmin: role === "ADMIN",
-        isEmployee: role === "EMPLOYEE",
       }}
     >
       {children}
