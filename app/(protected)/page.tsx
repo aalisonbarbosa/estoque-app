@@ -1,6 +1,72 @@
-import { MovementsTable } from "@/components/MovementsTable";
+"use client";
 
-export default async function Dashboard() {
+import { MovementsTable } from "@/components/MovementsTable";
+import { PaginationControls } from "@/components/PaginationControls";
+import { useState } from "react";
+
+type Movement = {
+  product: string;
+  type: string;
+  qtd: number;
+  data: string;
+  user: string;
+};
+
+export default function Dashboard() {
+  const allMovements: Movement[] = [
+    {
+      product: "Arroz",
+      type: "Entrada",
+      qtd: 10,
+      data: "10/09",
+      user: "alison",
+    },
+    {
+      product: "Feijão",
+      type: "Saida",
+      qtd: 2,
+      data: "15/09",
+      user: "vitória",
+    },
+    {
+      product: "Arroz",
+      type: "Entrada",
+      qtd: 10,
+      data: "10/09",
+      user: "renan",
+    },
+    {
+      product: "Feijão",
+      type: "Saida",
+      qtd: 2,
+      data: "15/09",
+      user: "ewellyn",
+    },
+    {
+      product: "Arroz",
+      type: "Entrada",
+      qtd: 10,
+      data: "10/09",
+      user: "amanda",
+    },
+    {
+      product: "Feijão",
+      type: "Saida",
+      qtd: 2,
+      data: "15/09",
+      user: "xuxu",
+    },
+    {
+      product: "Arroz",
+      type: "Entrada",
+      qtd: 10,
+      data: "10/09",
+      user: "sophio",
+    },
+  ];
+
+  const movement = allMovements.slice(0, 3);
+
   return (
     <>
       <header className="flex justify-between items-center mb-4">
@@ -27,7 +93,7 @@ export default async function Dashboard() {
 
         <div className="bg-white rounded-md p-4 shadow space-y-4">
           <h3 className="font-semibold">Últimas Movimentações</h3>
-          <MovementsTable />
+          <MovementsTable movements={movement} />
         </div>
         <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
           [ Gráfico Entradas vs Saídas ]
