@@ -41,7 +41,7 @@ export const Sidebar = () => {
         )}
       </nav>
 
-      {/* <button onClick={() => signOut()}>logout</button> */}
+      <button onClick={() => signOut()}>logout</button>
     </aside>
   );
 };

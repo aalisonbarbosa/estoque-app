@@ -1,6 +1,5 @@
 "use client";
 
-import { CreateProductModal } from "@/components/CreateProductModal";
 import { MovementsTable } from "@/components/MovementsTable";
 import { PaginationControls } from "@/components/PaginationControls";
 import { useState } from "react";
@@ -14,57 +13,6 @@ type Movement = {
 };
 
 export default function Transactions() {
-  const allMovements: Movement[] = [
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "alison",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "vitória",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "renan",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "ewellyn",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "amanda",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "xuxu",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "sophio",
-    },
-  ];
   const [isVisible, setIsvisible] = useState<boolean>(false);
 
   function toggleVisible() {
@@ -92,20 +40,24 @@ export default function Transactions() {
 
   return (
     <>
-      {isVisible && <CreateProductModal onToggle={toggleVisible} />}
-
       <section className="space-y-4">
         <h1 className="text-2xl font-bold">Movimentações</h1>
         <button
           onClick={toggleVisible}
-          className="bg-stone-400 text-white p-2 rounded-md cursor-pointer"
+          className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
         >
           Nova Movimentação
         </button>
         <div className="bg-white rounded-xl p-2 space-y-4">
-          <MovementsTable movements={movements} />
-          {allMovements.length > 5 && (
-            <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+          {movements.length === 0 ? (
+            <p>Nenhum produto encontrado.</p>
+          ) : (
+            <>
+              <MovementsTable movements={movements} />
+              {allMovements.length > 5 && (
+                <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+              )}
+            </>
           )}
         </div>
       </section>
