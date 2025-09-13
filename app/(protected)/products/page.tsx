@@ -19,90 +19,6 @@ export default function Products() {
       qtd: 30,
       price: 2,
     },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
-    {
-      id: 3,
-      name: "bolacha",
-      qtd: 15,
-      price: 6,
-    },
-    {
-      id: 4,
-      name: "feijão",
-      qtd: 6,
-      price: 10.9,
-    },
   ];
 
   const [isVisible, setIsvisible] = useState<boolean>(false);
@@ -137,9 +53,9 @@ export default function Products() {
         <h1 className="text-2xl font-bold">Produtos</h1>
         <button
           onClick={toggleVisible}
-          className="bg-stone-400 text-white p-2 rounded-md cursor-pointer"
+          className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
         >
-          Novo Projeto
+          Novo Produto
         </button>
         <div className="bg-white rounded-xl p-2">
           <ProductTable products={products} />

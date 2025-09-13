@@ -1,3 +1,7 @@
+"use client";
+
+import { useAuth } from "@/context/AuthContext";
+
 type Product = {
   id: number;
   name: string;
@@ -10,6 +14,8 @@ type ProductTableProps = {
 };
 
 export const ProductTable = ({ products }: ProductTableProps) => {
+  const { isAdmin } = useAuth();
+
   return (
     <table className="w-full text-left">
       <thead>
@@ -18,7 +24,7 @@ export const ProductTable = ({ products }: ProductTableProps) => {
           <td className="p-2 font-bold">Nome</td>
           <td className="p-2 font-bold">Qtd</td>
           <td className="p-2 font-bold">Preço</td>
-          <td className="p-2 font-bold">Ações</td>
+          {isAdmin && <td className="p-2 font-bold">Ações</td>}
         </tr>
       </thead>
       <tbody>
@@ -28,6 +34,7 @@ export const ProductTable = ({ products }: ProductTableProps) => {
             <td className="p-2">{product.name}</td>
             <td className="p-2">{product.qtd}</td>
             <td className="p-2">{product.price}</td>
+            {isAdmin && <td className="p-2">Editar | Excluir</td>}
           </tr>
         ))}
       </tbody>

@@ -24,17 +24,23 @@ export const auth = NextAuth({
         name: user.name!,
         email: user.email!,
         role: user.role!,
+        storeId: user.storeId!
       };
     },
   }),],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) { token.role = user.role; }
+      
+      if (user) {
+        token.role = user.role ?? "EMPLOYEE";
+        token.storeId = user.storeId;
+      }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role ?? "EMPLOYEE";
+        session.user.role = (token.role as string) ?? "EMPLOYEE";
+        session.user.storeId = token.storeId as string;
       }
       return session;
     },
