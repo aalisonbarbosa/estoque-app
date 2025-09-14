@@ -3,11 +3,12 @@
 import { useAuth } from "@/context/AuthContext";
 
 type Product = {
-  id: number;
+  id: string;
   name: string;
-  qtd: number;
+  quantity: number;
   price: number;
 };
+
 
 type ProductTableProps = {
   products: Product[];
@@ -32,7 +33,7 @@ export const ProductTable = ({ products }: ProductTableProps) => {
           <tr key={index} className="border-t border-black/20">
             <td className="p-2">{product.id}</td>
             <td className="p-2">{product.name}</td>
-            <td className="p-2">{product.qtd}</td>
+            <td className="p-2">{product.quantity}</td>
             <td className="p-2">{product.price}</td>
             {isAdmin && <td className="p-2">Editar | Excluir</td>}
           </tr>
