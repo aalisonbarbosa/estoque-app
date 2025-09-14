@@ -3,27 +3,45 @@
 import { CreateProductModal } from "@/components/CreateProductModal";
 import { PaginationControls } from "@/components/PaginationControls";
 import { ProductTable } from "@/components/ProductTable";
-import { useState } from "react";
+import { getProductsByStore } from "@/lib/actions/products";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+type Product = {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+};
 
 export default function Products() {
-  const allProducts = [
-    {
-      id: 1,
-      name: "arroz",
-      qtd: 10,
-      price: 7.9,
-    },
-    {
-      id: 2,
-      name: "biscoito",
-      qtd: 30,
-      price: 2,
-    },
-  ];
-
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isVisible, setIsvisible] = useState<boolean>(false);
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(4);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    async function getProducts() {
+      if (!session?.user.storeId) return;
+
+      const products = (await getProductsByStore(session?.user.storeId)) ?? [];
+
+      const formattedProducts: Product[] = products?.map((p) => ({
+        id: p.id,
+        name: p.name,
+        quantity: p.quantity,
+        price: p.price,
+      }));
+
+      setAllProducts(formattedProducts);
+    }
+
+    getProducts();
+  }, []);
+
+  const products = allProducts.slice(inicio, fim);
 
   function toggleVisible() {
     setIsvisible((prev) => !prev);
@@ -43,8 +61,6 @@ export default function Products() {
     }
   }
 
-  const products = allProducts.slice(inicio, fim);
-
   return (
     <>
       {isVisible && <CreateProductModal onToggle={toggleVisible} />}
@@ -57,12 +73,16 @@ export default function Products() {
         >
           Novo Produto
         </button>
-        <div className="bg-white rounded-xl p-2">
-          <ProductTable products={products} />
-          {allProducts.length > 5 && (
-            <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
-          )}
-        </div>
+        {allProducts.length === 0 ? (
+          <p>Nenhum produto encontrado.</p>
+        ) : (
+          <div className="bg-white rounded-xl p-2">
+            <ProductTable products={products} />
+            {allProducts.length > 5 && (
+              <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+            )}
+          </div>
+        )}
       </section>
     </>
   );

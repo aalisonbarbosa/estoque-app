@@ -10,16 +10,6 @@ type Props = {
   onToggle: () => void;
 };
 
-type Product = {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-  storeId: string;
-  categoryId: string;
-  supplierId: string;
-};
-
 type Category = {
   id: number;
   name: string;
