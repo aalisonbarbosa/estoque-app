@@ -3,9 +3,9 @@
 import { CreateProductModal } from "@/components/CreateProductModal";
 import { PaginationControls } from "@/components/PaginationControls";
 import { ProductTable } from "@/components/ProductTable";
-import { getProductsByStore } from "@/lib/actions/products";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { getProductsByStore } from "@/lib/actions/products";
 
 type Product = {
   id: string;
@@ -15,33 +15,38 @@ type Product = {
 };
 
 export default function Products() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isVisible, setIsvisible] = useState<boolean>(false);
-  const [inicio, setInicio] = useState(0);
-  const [fim, setFim] = useState(4);
-
   const { data: session } = useSession();
 
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isVisible, setIsvisible] = useState<boolean>(false);
+
+  const [inicio, setInicio] = useState(0);
+  const [fim, setFim] = useState(5);
+
   useEffect(() => {
-    async function getProducts() {
+    async function fetchProducts() {
       if (!session?.user.storeId) return;
 
-      const products = (await getProductsByStore(session?.user.storeId)) ?? [];
+      setLoading(true);
 
-      const formattedProducts: Product[] = products?.map((p) => ({
+      const products = (await getProductsByStore(session.user.storeId)) ?? [];
+
+      const formatted: Product[] = products.map((p) => ({
         id: p.id,
         name: p.name,
         quantity: p.quantity,
         price: p.price,
       }));
 
-      setAllProducts(formattedProducts);
+      setAllProducts(formatted);
+      setLoading(false);
     }
 
-    getProducts();
-  }, []);
+    fetchProducts();
+  }, [session?.user.storeId]);
 
-  const products = allProducts.slice(inicio, fim);
+  const productsSlice = allProducts.slice(inicio, fim);
 
   function toggleVisible() {
     setIsvisible((prev) => !prev);
@@ -61,9 +66,18 @@ export default function Products() {
     }
   }
 
+  function handleProductCreated(newProduct: Product) {
+    setAllProducts((prev) => [newProduct, ...prev]);
+  }
+
   return (
     <>
-      {isVisible && <CreateProductModal onToggle={toggleVisible} />}
+      {isVisible && (
+        <CreateProductModal
+          onToggle={toggleVisible}
+          onProductCreated={handleProductCreated}
+        />
+      )}
 
       <section className="space-y-4">
         <h1 className="text-2xl font-bold">Produtos</h1>
@@ -73,11 +87,14 @@ export default function Products() {
         >
           Novo Produto
         </button>
-        {allProducts.length === 0 ? (
+
+        {loading ? (
+          <p>Buscando produtos...</p>
+        ) : allProducts.length === 0 ? (
           <p>Nenhum produto encontrado.</p>
         ) : (
           <div className="bg-white rounded-xl p-2">
-            <ProductTable products={products} />
+            <ProductTable products={productsSlice} />
             {allProducts.length > 5 && (
               <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
             )}

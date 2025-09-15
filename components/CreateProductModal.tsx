@@ -1,17 +1,32 @@
 "use client";
 
+import { createProduct } from "@/lib/actions/products";
+import { createSupplier } from "@/lib/actions/supplier";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+type Product = {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+};
+
 type Props = {
   onToggle: () => void;
+  onProductCreated: (product: Product) => void;
 };
 
 type Category = {
-  id: number;
+  id: string;
+  name: string;
+};
+
+type Supplier = {
+  id: string;
   name: string;
 };
 
@@ -34,7 +49,7 @@ const productSchema = z.object({
 
 type ProductSchema = z.infer<typeof productSchema>;
 
-export const CreateProductModal = ({ onToggle }: Props) => {
+export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
   const { data: session } = useSession();
 
   const {
@@ -47,45 +62,24 @@ export const CreateProductModal = ({ onToggle }: Props) => {
 
   async function onSubmit(data: ProductSchema) {
     try {
-      const supplierResponse = await fetch("/api/suppliers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.supplierName }),
-      });
-
-      const supplierData = await supplierResponse.json();
-      if (!supplierResponse.ok) {
-        console.error("Failed to create supplier:", supplierData);
-        return;
-      }
-
-      const supplierId = supplierData.supplier.id;
+      const supplier: Supplier = await createSupplier(data.supplierName);
 
       if (!session?.user.storeId) {
-        console.error("Store ID não encontrado no usuário logado");
-        return;
+        throw new Error("Store ID não encontrado");
       }
 
-      const productResponse = await fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.name,
-          price: data.price,
-          quantity: data.quantity,
-          categoryId: data.categoryId,
-          supplierId,
-          storeId: session?.user.storeId,
-        }),
+      const product = await createProduct({
+        name: data.name,
+        quantity: data.quantity,
+        price: data.price,
+        categoryId: data.categoryId,
+        supplierId: supplier.id,
+        storeId: session.user.storeId,
       });
 
-      const productData = await productResponse.json();
-      if (!productResponse.ok) {
-        console.error("Failed to create product:", productData);
-        return;
-      }
+      onProductCreated(product);
 
-      console.log("Product created:", productData);
+      console.log("Product created:", product);
     } catch (err) {
       console.error("Error:", err);
     }
