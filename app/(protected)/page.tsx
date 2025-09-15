@@ -1,8 +1,6 @@
 "use client";
 
 import { MovementsTable } from "@/components/MovementsTable";
-import { PaginationControls } from "@/components/PaginationControls";
-import { useState } from "react";
 
 type Movement = {
   product: string;
