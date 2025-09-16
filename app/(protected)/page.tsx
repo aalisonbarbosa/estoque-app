@@ -1,67 +1,50 @@
 "use client";
 
 import { MovementsTable } from "@/components/MovementsTable";
+import { getMovements } from "@/lib/actions/movements";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-type Movement = {
-  product: string;
-  type: string;
-  qtd: number;
-  data: string;
-  user: string;
-};
+interface Movement {
+  productName: string;
+  movementType: string;
+  quantity: number;
+  userName: string;
+  date: string;
+}
 
 export default function Dashboard() {
-  const allMovements: Movement[] = [
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "alison",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "vitória",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "renan",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "ewellyn",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "amanda",
-    },
-    {
-      product: "Feijão",
-      type: "Saida",
-      qtd: 2,
-      data: "15/09",
-      user: "xuxu",
-    },
-    {
-      product: "Arroz",
-      type: "Entrada",
-      qtd: 10,
-      data: "10/09",
-      user: "sophio",
-    },
-  ];
+  const [allMovements, setAllMovements] = useState<Movement[]>([]);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    async function fetchMovements() {
+      try {
+        const res = (await getMovements(session?.user.storeId!)) ?? [];
+
+        const formatted: Movement[] = res.map((m) => ({
+          productName: m.productName,
+          movementType: m.movementType,
+          quantity: m.quantity,
+          userName: m.userName,
+          date: `${
+            m.date.getDate() +
+            "/" +
+            `${m.date.getMonth() < 10 && "0"}` +
+            m.date.getMonth() +
+            "/" +
+            m.date.getFullYear()
+          }`,
+        }));
+
+        setAllMovements(formatted);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchMovements();
+  }, []);
 
   const movement = allMovements.slice(0, 3);
 
@@ -91,7 +74,11 @@ export default function Dashboard() {
 
         <div className="bg-white rounded-md p-4 shadow space-y-4">
           <h3 className="font-semibold">Últimas Movimentações</h3>
-          <MovementsTable movements={movement} />
+          {movement.length === 0 ? (
+            <p>Nenhuma movimentação encontrada.</p>
+          ) : (
+            <MovementsTable movements={movement} />
+          )}
         </div>
         <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
           [ Gráfico Entradas vs Saídas ]

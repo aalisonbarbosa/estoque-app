@@ -2,7 +2,6 @@
 
 import { createMovement } from "@/lib/actions/movements";
 import { getProductsByStore } from "@/lib/actions/products";
-import { prisma } from "@/lib/prisma";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ type Props = {
 };
 
 const movementSchema = z.object({
-  productId: z.string().min(1, "O produto é obrigatório"),
+  productName: z.string().min(1, "O produto é obrigatório"),
   movementType: z.string().min(1, "O tipo é obrigatório"),
   quantity: z.coerce
     .number()
@@ -63,13 +62,15 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
 
   async function onSubmit(data: MovementSchema) {
     try {
-      if (!session?.user.id) throw new Error("User ID não encontrado");
+      if (!session?.user.storeId || !session?.user.name)
+        throw new Error("User ID ou store ID não encontrado");
 
       const newMovement = await createMovement({
-        productId: data.productId,
+        productName: data.productName,
         movementType: data.movementType,
         quantity: data.quantity,
-        userId: session?.user.id,
+        userName: session?.user.name,
+        storeId: session.user.storeId,
       });
 
       console.log("Movement created: ", newMovement);
@@ -86,19 +87,19 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <select
             className="p-2 rounded-md block shadow"
-            {...register("productId")}
+            {...register("productName")}
           >
             <option value="" disabled>
               Escolha o produto
             </option>
             {products.map((p) => (
-              <option value={p.id} key={p.id}>
+              <option value={p.name} key={p.id}>
                 {p.name}
               </option>
             ))}
           </select>
-          {errors.productId && (
-            <p className="text-red-500 text-sm">{errors.productId.message}</p>
+          {errors.productName && (
+            <p className="text-red-500 text-sm">{errors.productName.message}</p>
           )}
           <select
             className="p-2 rounded-md block shadow"

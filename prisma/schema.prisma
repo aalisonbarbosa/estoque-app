@@ -35,19 +35,19 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   password      String
   role          String?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   storeId       String
   accounts      Account[]
   sessions      Session[]
-  store         Store     @relation(fields: [storeId], references: [id])
+  store         Store      @relation(fields: [storeId], references: [id])
 }
 
 model VerificationRequest {
@@ -62,12 +62,13 @@ model VerificationRequest {
 }
 
 model Store {
-  id       String    @id @default(cuid())
-  name     String
-  address  String
-  taxId    String?
-  products Product[]
-  users    User[]
+  id        String     @id @default(cuid())
+  name      String
+  address   String
+  taxId     String?
+  products  Product[]
+  movements Movement[]
+  users     User[]
 }
 
 model Product {
@@ -83,11 +84,13 @@ model Product {
 
 model Movement {
   id           String   @id @default(cuid())
-  productId    String
+  productName  String
   quantity     Int
   movementType String
   date         DateTime @default(now())
-  userId       String
+  userName     String
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id])
 }
 
 model Category {

@@ -1,10 +1,10 @@
-type Movement = {
-  product: string;
-  type: string;
-  qtd: number;
-  data: string;
-  user: string;
-};
+interface Movement {
+    productName: string;
+    movementType: string;
+    quantity: number
+    userName: string;
+    date: string
+}
 
 type MovementsTableProps = {
   movements: Movement[];
@@ -26,11 +26,11 @@ export const MovementsTable = ({ movements }: MovementsTableProps) => {
         <tbody>
           {movements.map((mov, index) => (
             <tr key={index} className="border-t border-black/20">
-              <td className="p-2">{mov.product}</td>
-              <td className="p-2">{mov.type}</td>
-              <td className="p-2">{mov.qtd}</td>
-              <td className="p-2">{mov.data}</td>
-              <td className="p-2">{mov.user}</td>
+              <td className="p-2">{mov.productName}</td>
+              <td className="p-2">{mov.movementType}</td>
+              <td className="p-2">{mov.quantity}</td>
+              <td className="p-2">{mov.date}</td>
+              <td className="p-2">{mov.userName}</td>
             </tr>
           ))}
         </tbody>

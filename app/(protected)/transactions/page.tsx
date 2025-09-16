@@ -3,18 +3,22 @@
 import { CreateMovementModal } from "@/components/CreateMovementModal";
 import { MovementsTable } from "@/components/MovementsTable";
 import { PaginationControls } from "@/components/PaginationControls";
-import { useState } from "react";
+import { getMovements } from "@/lib/actions/movements";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-type Movement = {
-  product: string;
-  type: string;
-  qtd: number;
-  data: string;
-  user: string;
-};
-  
+interface Movement {
+  productName: string;
+  movementType: string;
+  quantity: number;
+  userName: string;
+  date: string;
+}
+
 export default function Transactions() {
   const [isVisible, setIsvisible] = useState<boolean>(false);
+
+  const { data: session } = useSession();
 
   function toggleVisible() {
     setIsvisible((prev) => !prev);
@@ -25,9 +29,36 @@ export default function Transactions() {
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(4);
 
-  // const movements = allMovements.slice(inicio, fim);
+  useEffect(() => {
+    async function fetchMovements() {
+      try {
+        const res = (await getMovements(session?.user.storeId!)) ?? [];
 
-  const movements: Movement[] = [];
+        const formatted: Movement[] = res.map((m) => ({
+          productName: m.productName,
+          movementType: m.movementType,
+          quantity: m.quantity,
+          userName: m.userName,
+          date: `${
+            m.date.getDate() +
+            "/" +
+            `${m.date.getMonth() < 10 && "0"}` +
+            m.date.getMonth() +
+            "/" +
+            m.date.getFullYear()
+          }`,
+        }));
+
+        setAllMovements(formatted);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchMovements();
+  }, []);
+
+  const movements: Movement[] = allMovements.slice(inicio, fim);
 
   function handlerPrev() {
     if (inicio > 0) {
