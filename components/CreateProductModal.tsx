@@ -55,7 +55,7 @@ export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
   });
@@ -175,13 +175,13 @@ export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
             <button
               onClick={onToggle}
               type="button"
-              className="bg-stone-400 hover:bg-stone-500 duration-300 text-white p-2 rounded-md cursor-pointer"
+              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="bg-stone-400 hover:bg-stone-500 duration-300 text-white p-2 rounded-md cursor-pointer"
+              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
             >
               Criar produto
             </button>

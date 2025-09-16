@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateMovementModal } from "@/components/CreateMovementModal";
 import { MovementsTable } from "@/components/MovementsTable";
 import { PaginationControls } from "@/components/PaginationControls";
 import { useState } from "react";
@@ -11,7 +12,7 @@ type Movement = {
   data: string;
   user: string;
 };
-
+  
 export default function Transactions() {
   const [isVisible, setIsvisible] = useState<boolean>(false);
 
@@ -19,10 +20,14 @@ export default function Transactions() {
     setIsvisible((prev) => !prev);
   }
 
+  const [allMovements, setAllMovements] = useState<Movement[]>([]);
+
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(4);
 
-  const movements = allMovements.slice(inicio, fim);
+  // const movements = allMovements.slice(inicio, fim);
+
+  const movements: Movement[] = [];
 
   function handlerPrev() {
     if (inicio > 0) {
@@ -40,6 +45,7 @@ export default function Transactions() {
 
   return (
     <>
+      {isVisible && <CreateMovementModal onToggle={toggleVisible} />}
       <section className="space-y-4">
         <h1 className="text-2xl font-bold">Movimentações</h1>
         <button
@@ -48,18 +54,16 @@ export default function Transactions() {
         >
           Nova Movimentação
         </button>
-        <div className="bg-white rounded-xl p-2 space-y-4">
-          {movements.length === 0 ? (
-            <p>Nenhum produto encontrado.</p>
-          ) : (
-            <>
-              <MovementsTable movements={movements} />
-              {allMovements.length > 5 && (
-                <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
-              )}
-            </>
-          )}
-        </div>
+        {movements.length === 0 ? (
+          <p>Nenhuma movimentação encontrada.</p>
+        ) : (
+          <div className="bg-white rounded-xl p-2 space-y-4">
+            <MovementsTable movements={movements} />
+            {allMovements.length > 5 && (
+              <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+            )}
+          </div>
+        )}
       </section>
     </>
   );

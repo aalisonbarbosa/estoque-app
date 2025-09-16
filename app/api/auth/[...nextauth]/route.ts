@@ -20,7 +20,7 @@ export const auth = NextAuth({
       if (!isValid) return null;
 
       return {
-        id: user.id,
+        id: user.id!,
         name: user.name!,
         email: user.email!,
         role: user.role!,
@@ -30,8 +30,9 @@ export const auth = NextAuth({
   }),],
   callbacks: {
     async jwt({ token, user }) {
-      
+
       if (user) {
+        token.id = user.id;
         token.role = user.role ?? "EMPLOYEE";
         token.storeId = user.storeId;
       }
@@ -39,6 +40,7 @@ export const auth = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.id as string;
         session.user.role = (token.role as string) ?? "EMPLOYEE";
         session.user.storeId = token.storeId as string;
       }
