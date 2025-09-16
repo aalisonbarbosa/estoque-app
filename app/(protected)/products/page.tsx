@@ -44,7 +44,7 @@ export default function Products() {
     }
 
     fetchProducts();
-  }, [session?.user.storeId]);
+  }, []);
 
   const productsSlice = allProducts.slice(inicio, fim);
 
