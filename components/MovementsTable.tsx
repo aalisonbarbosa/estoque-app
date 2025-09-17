@@ -1,9 +1,11 @@
 interface Movement {
-    productName: string;
-    movementType: string;
-    quantity: number
-    userName: string;
-    date: string
+  productId: string;
+  productName: string;
+  movementType: string;
+  quantity: number;
+  userName: string; 
+  date: string;
+  storeId: string;
 }
 
 type MovementsTableProps = {
@@ -24,13 +26,21 @@ export const MovementsTable = ({ movements }: MovementsTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {movements.map((mov, index) => (
-            <tr key={index} className="border-t border-black/20">
-              <td className="p-2">{mov.productName}</td>
-              <td className="p-2">{mov.movementType}</td>
-              <td className="p-2">{mov.quantity}</td>
-              <td className="p-2">{mov.date}</td>
-              <td className="p-2">{mov.userName}</td>
+          {movements.map((m) => (
+            <tr key={m.productId} className="border-t border-black/20">
+              <td className="p-2">{m.productName}</td>
+              <td
+                className={`p-2 ${
+                  m.movementType === "expense"
+                    ? "text-red-500"
+                    : "text-green-500"
+                }`}
+              >
+                {m.movementType === "income" ? "Entrada" : "Saída"}
+              </td>
+              <td className="p-2">{m.quantity}</td>
+              <td className="p-2">{m.date}</td>
+              <td className="p-2">{m.userName}</td>
             </tr>
           ))}
         </tbody>

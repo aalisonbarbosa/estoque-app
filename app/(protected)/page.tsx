@@ -6,11 +6,13 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 interface Movement {
+  productId: string;
   productName: string;
   movementType: string;
   quantity: number;
-  userName: string;
+  userName: string; 
   date: string;
+  storeId: string;
 }
 
 export default function Dashboard() {
@@ -23,10 +25,11 @@ export default function Dashboard() {
         const res = (await getMovements(session?.user.storeId!)) ?? [];
 
         const formatted: Movement[] = res.map((m) => ({
-          productName: m.productName,
+          productId: m.productId,
+          productName: m.product.name!,
           movementType: m.movementType,
           quantity: m.quantity,
-          userName: m.userName,
+          userName: m.user.name!,
           date: `${
             m.date.getDate() +
             "/" +
@@ -35,6 +38,7 @@ export default function Dashboard() {
             "/" +
             m.date.getFullYear()
           }`,
+          storeId: m.storeId,
         }));
 
         setAllMovements(formatted);

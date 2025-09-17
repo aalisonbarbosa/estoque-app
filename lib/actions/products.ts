@@ -16,6 +16,7 @@ export async function createProduct(product: Product) {
         const newProduct = await prisma.product.create({
             data: product,
         });
+
         return newProduct;
     } catch (err) {
         console.error("Erro ao criar produto:", err);
@@ -34,5 +35,6 @@ export async function getProductsByStore(storeId: string) {
         return product;
     } catch (err) {
         console.error("Erro ao buscar produtos:", err);
+        throw err;
     }
 }

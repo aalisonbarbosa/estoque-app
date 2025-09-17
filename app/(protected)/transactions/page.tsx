@@ -8,11 +8,14 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 interface Movement {
-  productName: string;
+  productId: string;
+  productName: string; 
   movementType: string;
   quantity: number;
+  userId: string;
   userName: string;
-  date: string;
+  date?: string;
+  storeId?: string;
 }
 
 export default function Transactions() {
@@ -35,18 +38,16 @@ export default function Transactions() {
         const res = (await getMovements(session?.user.storeId!)) ?? [];
 
         const formatted: Movement[] = res.map((m) => ({
-          productName: m.productName,
+          productId: m.productId,
+          productName: m.product.name!,
           movementType: m.movementType,
           quantity: m.quantity,
-          userName: m.userName,
-          date: `${
-            m.date.getDate() +
-            "/" +
-            `${m.date.getMonth() < 10 && "0"}` +
-            m.date.getMonth() +
-            "/" +
-            m.date.getFullYear()
-          }`,
+          userId: m.userId,
+          userName: m.user.name!,
+          date: `${m.date.getDate()}/${String(m.date.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}/${m.date.getFullYear()}`,
         }));
 
         setAllMovements(formatted);
@@ -56,7 +57,7 @@ export default function Transactions() {
     }
 
     fetchMovements();
-  }, []);
+  }, [session?.user.storeId]);
 
   const movements: Movement[] = allMovements.slice(inicio, fim);
 
@@ -76,7 +77,11 @@ export default function Transactions() {
 
   return (
     <>
-      {isVisible && <CreateMovementModal onToggle={toggleVisible} />}
+      {isVisible && (
+        <CreateMovementModal
+          onToggle={toggleVisible}
+        />
+      )}
       <section className="space-y-4">
         <h1 className="text-2xl font-bold">Movimentações</h1>
         <button

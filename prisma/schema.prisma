@@ -48,6 +48,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   store         Store      @relation(fields: [storeId], references: [id])
+  Movement      Movement[]
 }
 
 model VerificationRequest {
@@ -66,30 +67,33 @@ model Store {
   name      String
   address   String
   taxId     String?
-  products  Product[]
   movements Movement[]
+  products  Product[]
   users     User[]
 }
 
 model Product {
-  id         String @id @default(cuid())
+  id         String     @id @default(cuid())
   name       String
   quantity   Int
   price      Float
   storeId    String
   categoryId String
   supplierId String
-  store      Store  @relation(fields: [storeId], references: [id])
+  store      Store      @relation(fields: [storeId], references: [id])
+  Movement   Movement[]
 }
 
 model Movement {
   id           String   @id @default(cuid())
-  productName  String
   quantity     Int
   movementType String
   date         DateTime @default(now())
-  userName     String
   storeId      String
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
   store        Store    @relation(fields: [storeId], references: [id])
 }
 
@@ -101,4 +105,6 @@ model Category {
 model Supplier {
   id   String @id @default(cuid())
   name String
+  // storeId String
+  // store   Store   @relation(fields: [storeId], references: [id])
 }
