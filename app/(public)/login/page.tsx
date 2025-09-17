@@ -1,12 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import z from "zod";
 
 const loginSchema = z.object({
   email: z.string().email("E-mail inválido"),

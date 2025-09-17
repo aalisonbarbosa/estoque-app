@@ -1,55 +1,24 @@
 "use client";
 
-import { createProduct } from "@/lib/actions/products";
-import { createSupplier } from "@/lib/actions/supplier";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import z from "zod";
 
-type Product = {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-};
+import { getCategories } from "@/lib/actions/category";
+import { createProduct } from "@/lib/actions/product";
+import { createSupplier } from "@/lib/actions/supplier";
+
+import { ProductSchema, productSchema } from "@/lib/schemas/product";
+
+import { Category, Product, Supplier } from "@/types/types";
 
 type Props = {
   onToggle: () => void;
-  onProductCreated: (product: Product) => void;
 };
 
-type Category = {
-  id: string;
-  name: string;
-};
 
-type Supplier = {
-  id: string;
-  name: string;
-};
-
-const productSchema = z.object({
-  name: z
-    .string()
-    .min(1, "O nome é obrigatório")
-    .max(100, "O nome deve ter no máximo 100 caracteres"),
-  quantity: z.coerce
-    .number()
-    .int("A quantidade deve ser um número inteiro")
-    .min(1, "A quantidade deve ser pelo menos 1"),
-  price: z.coerce.number().min(0.1, "O preço deve ser no mínimo 0,1"),
-  categoryId: z.string().min(1, "A categoria é obrigatória"),
-  supplierName: z
-    .string()
-    .min(1, "O nome do fornecedor é obrigatório")
-    .max(100, "O nome do fornecedor deve ter no máximo 100 caracteres"),
-});
-
-type ProductSchema = z.infer<typeof productSchema>;
-
-export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
+export const CreateProductModal = ({onToggle}: Props) => {
   const { data: session } = useSession();
 
   const {
@@ -68,7 +37,7 @@ export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
         throw new Error("Store ID não encontrado");
       }
 
-      const product = await createProduct({
+      const product: Product = await createProduct({
         name: data.name,
         quantity: data.quantity,
         price: data.price,
@@ -76,8 +45,6 @@ export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
         supplierId: supplier.id,
         storeId: session.user.storeId,
       });
-
-      onProductCreated(product);
 
       console.log("Product created:", product);
     } catch (err) {
@@ -90,18 +57,11 @@ export const CreateProductModal = ({ onToggle, onProductCreated }: Props) => {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("/api/categories");
-        const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setCategories(data);
-        } else {
-          console.error("API retornou algo inesperado:", data);
-          setCategories([]);
-        }
+        const categories = await getCategories();
+        
+        setCategories(categories);
       } catch (err) {
-        console.error("Erro ao buscar categorias:", err);
-        setCategories([]);
+        console.error(err);
       }
     }
 

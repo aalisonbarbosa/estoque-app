@@ -1,24 +1,13 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const storeRegistrationSchema = z.object({
-  storeName: z.string().min(1, "O nome da loja é obrigatório"),
-  address: z.string().min(1, "O endereço é obrigatório"),
-  taxId: z
-    .string()
-    .min(11, "O CNPJ/CPF deve ter no mínimo 11 dígitos")
-    .max(18, "O CNPJ/CPF deve ter no máximo 18 caracteres"),
-  adminName: z.string().min(1, "O nome do administrador é obrigatório"),
-  adminEmail: z.string().email("E-mail inválido"),
-  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
-});
+import { createStore } from "@/lib/actions/store";
 
-type StoreRegistrationSchema = z.infer<typeof storeRegistrationSchema>;
+import { storeRegistrationSchema, StoreRegistrationSchema } from "@/lib/schemas/store";
 
 export default function RegisterStorePage() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -29,45 +18,48 @@ export default function RegisterStorePage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     trigger,
   } = useForm<StoreRegistrationSchema>({
     resolver: zodResolver(storeRegistrationSchema),
   });
 
-  async function handleNextStep() {
-    const isValid = await trigger(["storeName", "address", "taxId"]);
-    if (isValid) {
-      setStep(2);
-    }
-  }
-
-  async function onSubmit(data: StoreRegistrationSchema) {
+  async function onSubmit(formData: StoreRegistrationSchema) {
     setErrorMessage(null);
     try {
       setLoading(true);
 
-      const res = await fetch("/api/stores", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const storeData = {
+        name: formData.storeName,
+        address: formData.address,
+        taxId: formData.taxId ?? "",
+      };
+
+      const adminData = {
+        name: formData.adminName,
+        email: formData.adminEmail,
+        password: formData.password,
+      };
+
+      await createStore(storeData, adminData);
 
       setLoading(false);
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Erro ao registrar loja");
-      }
 
       console.log("Loja registrada com sucesso!");
 
       router.push("/login");
-    } catch (err: any) {
+    } catch (err) {
       setErrorMessage(
         "Erro inesperado no servidor. Tente novamente mais tarde."
       );
       console.error(err);
+    }
+  }
+
+  async function handleNextStep() {
+    const isValid = await trigger(["storeName", "address", "taxId"]);
+    if (isValid) {
+      setStep(2);
     }
   }
 
@@ -104,7 +96,7 @@ export default function RegisterStorePage() {
                 )}
                 <input
                   type="text"
-                  placeholder="CNPJ"
+                  placeholder="CNPJ (Opcional)"
                   className="w-full border rounded px-4 py-2"
                   {...register("taxId")}
                 />

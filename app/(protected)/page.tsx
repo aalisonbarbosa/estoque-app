@@ -1,9 +1,11 @@
 "use client";
 
-import { MovementsTable } from "@/components/MovementsTable";
-import { getMovements } from "@/lib/actions/movements";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+
+import { getMovements } from "@/lib/actions/movement";
+
+import { MovementsTable } from "@/components/MovementsTable";
 
 interface Movement {
   productId: string;
