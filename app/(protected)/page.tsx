@@ -5,20 +5,12 @@ import { useSession } from "next-auth/react";
 
 import { getMovements } from "@/lib/actions/movement";
 
+import { MovementTable } from "@/types/types";
+
 import { MovementsTable } from "@/components/MovementsTable";
 
-interface Movement {
-  productId: string;
-  productName: string;
-  movementType: string;
-  quantity: number;
-  userName: string; 
-  date: string;
-  storeId: string;
-}
-
 export default function Dashboard() {
-  const [allMovements, setAllMovements] = useState<Movement[]>([]);
+  const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -26,7 +18,7 @@ export default function Dashboard() {
       try {
         const res = (await getMovements(session?.user.storeId!)) ?? [];
 
-        const formatted: Movement[] = res.map((m) => ({
+        const formatted: MovementTable[] = res.map((m) => ({
           productId: m.productId,
           productName: m.product.name!,
           movementType: m.movementType,

@@ -8,17 +8,7 @@ import { getMovements } from "@/lib/actions/movement";
 import { CreateMovementModal } from "@/components/CreateMovementModal";
 import { MovementsTable } from "@/components/MovementsTable";
 import { PaginationControls } from "@/components/PaginationControls";
-
-interface Movement {
-  productId: string;
-  productName: string; 
-  movementType: string;
-  quantity: number;
-  userId: string;
-  userName: string;
-  date: string;
-  storeId?: string;
-}
+import { MovementTable } from "@/types/types";
 
 export default function Transactions() {
   const [isVisible, setIsvisible] = useState<boolean>(false);
@@ -29,7 +19,7 @@ export default function Transactions() {
     setIsvisible((prev) => !prev);
   }
 
-  const [allMovements, setAllMovements] = useState<Movement[]>([]);
+  const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
 
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(4);
@@ -39,7 +29,7 @@ export default function Transactions() {
       try {
         const res = (await getMovements(session?.user.storeId!)) ?? [];
 
-        const formatted: Movement[] = res.map((m) => ({
+        const formatted: MovementTable[] = res.map((m) => ({
           productId: m.productId,
           productName: m.product.name!,
           movementType: m.movementType,
@@ -61,7 +51,7 @@ export default function Transactions() {
     fetchMovements();
   }, [session?.user.storeId]);
 
-  const movements: Movement[] = allMovements.slice(inicio, fim);
+  const movements: MovementTable[] = allMovements.slice(inicio, fim);
 
   function handlerPrev() {
     if (inicio > 0) {
