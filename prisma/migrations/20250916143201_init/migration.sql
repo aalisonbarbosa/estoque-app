@@ -81,10 +81,11 @@ CREATE TABLE "public"."Product" (
 -- CreateTable
 CREATE TABLE "public"."Movement" (
     "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "movementType" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "storeId" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "Movement_pkey" PRIMARY KEY ("id")
@@ -135,3 +136,9 @@ ALTER TABLE "public"."User" ADD CONSTRAINT "User_storeId_fkey" FOREIGN KEY ("sto
 
 -- AddForeignKey
 ALTER TABLE "public"."Product" ADD CONSTRAINT "Product_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "public"."Store"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Movement" ADD CONSTRAINT "Movement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Movement" ADD CONSTRAINT "Movement_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "public"."Store"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,24 +1,20 @@
 "use client";
 
-import { createMovement } from "@/lib/actions/movements";
+import { registerMovement } from "@/lib/actions/movements";
 import { getProductsByStore } from "@/lib/actions/products";
+import { Movement, Product } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-type Product = {
-  id: string;
-  name: string;
-};
-
 type Props = {
   onToggle: () => void;
 };
 
 const movementSchema = z.object({
-  productName: z.string().min(1, "O produto é obrigatório"),
+  productId: z.string().min(1, "O produto é obrigatório"),
   movementType: z.string().min(1, "O tipo é obrigatório"),
   quantity: z.coerce
     .number()
@@ -28,12 +24,10 @@ const movementSchema = z.object({
 
 type MovementSchema = z.infer<typeof movementSchema>;
 
-export const CreateMovementModal = ({ onToggle }: Props) => {
+export const CreateMovementModal = ({onToggle}: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   const { data: session } = useSession();
-
-  console.log(session);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -44,6 +38,7 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
       const formatted: Product[] = res.map((p) => ({
         id: p.id,
         name: p.name,
+        quantity: p.quantity,
       }));
 
       setProducts(formatted);
@@ -60,20 +55,41 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
     resolver: zodResolver(movementSchema),
   });
 
-  async function onSubmit(data: MovementSchema) {
+  async function onSubmit(formData: MovementSchema) {
     try {
-      if (!session?.user.storeId || !session?.user.name)
+      if (!session?.user.storeId || !session?.user.id)
         throw new Error("User ID ou store ID não encontrado");
 
-      const newMovement = await createMovement({
-        productName: data.productName,
-        movementType: data.movementType,
-        quantity: data.quantity,
-        userName: session?.user.name,
-        storeId: session.user.storeId,
-      });
+      const existingQuantity = products.find(
+        (product) => product.id === formData.productId
+      )?.quantity;
 
-      console.log("Movement created: ", newMovement);
+      if (existingQuantity === undefined) {
+        throw new Error("Produto não encontrado");
+      }
+
+      const updatedQuantity =
+        formData.movementType === "income"
+          ? existingQuantity + formData.quantity
+          : existingQuantity - formData.quantity;
+
+      if (updatedQuantity < 0) {
+        throw new Error("Quantidade insuficiente em estoque");
+      }
+
+      const movementData: Movement = {
+        ...formData,
+        userId: session.user.id,
+        storeId: session.user.storeId,
+      };
+
+      const [createdMovement, updatedProduct] = await registerMovement(
+        movementData,
+        updatedQuantity
+      );
+
+      console.log("Movement created: ", createdMovement);
+      console.log("Product updated: ", updatedProduct);
     } catch (err) {
       console.error(err);
     }
@@ -87,19 +103,19 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <select
             className="p-2 rounded-md block shadow"
-            {...register("productName")}
+            {...register("productId")}
           >
             <option value="" disabled>
               Escolha o produto
             </option>
             {products.map((p) => (
-              <option value={p.name} key={p.id}>
+              <option value={p.id} key={p.id}>
                 {p.name}
               </option>
             ))}
           </select>
-          {errors.productName && (
-            <p className="text-red-500 text-sm">{errors.productName.message}</p>
+          {errors.productId && (
+            <p className="text-red-500 text-sm">{errors.productId.message}</p>
           )}
           <select
             className="p-2 rounded-md block shadow"

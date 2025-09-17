@@ -1,36 +1,43 @@
 "use server";
 
+import { Movement, Product } from "@/types/types";
 import { prisma } from "../prisma";
-
-interface Movement {
-    productName: string;
-    movementType: string;
-    quantity: number;
-    userName: string;
-    storeId: string;
-}
 
 export async function getMovements(storeId: string) {
     try {
-        const movements = await prisma.movement.findMany({
-            where: {
-                storeId,
-            }
-        })
-
-        return movements;
+        return prisma.movement.findMany({
+            where: { product: { storeId } },
+            include: {
+                product: { select: { name: true } },
+                user: { select: { name: true } },
+            },
+            orderBy: { date: "desc" },
+        });
     } catch (err) {
         console.error(err)
+        throw err;
     }
 }
 
-export async function createMovement(movement: Movement) {
+export async function registerMovement(movement: Movement, updatedQuantity: number): Promise<[Movement, Product]> {
     try {
-        const newMovement = await prisma.movement.create({
-            data: movement
-        })
+        const [createdMovement, updatedProduct] = await prisma.$transaction([
+            prisma.movement.create({
+                data: {
+                    productId: movement.productId,
+                    movementType: movement.movementType,
+                    quantity: movement.quantity,
+                    userId: movement.userId,
+                    storeId: movement.storeId,
+                },
+            }),
+            prisma.product.update({
+                where: { id: movement.productId },
+                data: { quantity: updatedQuantity },
+            }),
+        ]);
 
-        return newMovement
+        return [createdMovement, updatedProduct];
     } catch (err) {
         console.error(err)
         throw err;
