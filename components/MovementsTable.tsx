@@ -1,18 +1,10 @@
-interface Movement {
-  productId: string;
-  productName: string;
-  movementType: string;
-  quantity: number;
-  userName: string; 
-  date: string;
-  storeId: string;
-}
+import { MovementTable } from "@/types/types";
 
-type MovementsTableProps = {
-  movements: Movement[];
-};
-
-export const MovementsTable = ({ movements }: MovementsTableProps) => {
+export const MovementsTable = ({
+  movements,
+}: {
+  movements: MovementTable[];
+}) => {
   return (
     <>
       <table className="w-full text-left">
