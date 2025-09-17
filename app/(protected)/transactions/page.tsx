@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+
+import { getMovements } from "@/lib/actions/movement";
+
 import { CreateMovementModal } from "@/components/CreateMovementModal";
 import { MovementsTable } from "@/components/MovementsTable";
 import { PaginationControls } from "@/components/PaginationControls";
-import { getMovements } from "@/lib/actions/movements";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 
 interface Movement {
   productId: string;
@@ -14,7 +16,7 @@ interface Movement {
   quantity: number;
   userId: string;
   userName: string;
-  date?: string;
+  date: string;
   storeId?: string;
 }
 

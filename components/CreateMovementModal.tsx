@@ -1,52 +1,22 @@
 "use client";
 
-import { registerMovement } from "@/lib/actions/movements";
-import { getProductsByStore } from "@/lib/actions/products";
-import { Movement, Product } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+
+import { registerMovement } from "@/lib/actions/movement";
+import { getProductsByStore } from "@/lib/actions/product";
+
+import { MovementSchema, movementSchema } from "@/lib/schemas/movement";
+
+import { Movement, Product } from "@/types/types";
 
 type Props = {
   onToggle: () => void;
 };
 
-const movementSchema = z.object({
-  productId: z.string().min(1, "O produto é obrigatório"),
-  movementType: z.string().min(1, "O tipo é obrigatório"),
-  quantity: z.coerce
-    .number()
-    .int()
-    .min(1, "A quantidade deve ser um número inteiro"),
-});
-
-type MovementSchema = z.infer<typeof movementSchema>;
-
-export const CreateMovementModal = ({onToggle}: Props) => {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const { data: session } = useSession();
-
-  useEffect(() => {
-    async function fetchProducts() {
-      if (!session?.user.storeId) return;
-
-      const res = (await getProductsByStore(session.user.storeId)) ?? [];
-
-      const formatted: Product[] = res.map((p) => ({
-        id: p.id,
-        name: p.name,
-        quantity: p.quantity,
-      }));
-
-      setProducts(formatted);
-    }
-
-    fetchProducts();
-  }, []);
-
+export const CreateMovementModal = ({ onToggle }: Props) => {
   const {
     register,
     handleSubmit,
@@ -54,6 +24,30 @@ export const CreateMovementModal = ({onToggle}: Props) => {
   } = useForm({
     resolver: zodResolver(movementSchema),
   });
+  const [products, setProducts] = useState<Product[]>([]);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    async function getProducts() {
+      try {
+        if (!session?.user.storeId) return;
+
+        const res = (await getProductsByStore(session.user.storeId)) ?? [];
+
+        const formatted: Product[] = res.map((p) => ({
+          id: p.id,
+          name: p.name,
+          quantity: p.quantity,
+        }));
+
+        setProducts(formatted);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getProducts();
+  }, []);
 
   async function onSubmit(formData: MovementSchema) {
     try {
@@ -83,13 +77,7 @@ export const CreateMovementModal = ({onToggle}: Props) => {
         storeId: session.user.storeId,
       };
 
-      const [createdMovement, updatedProduct] = await registerMovement(
-        movementData,
-        updatedQuantity
-      );
-
-      console.log("Movement created: ", createdMovement);
-      console.log("Product updated: ", updatedProduct);
+      await registerMovement(movementData, updatedQuantity);
     } catch (err) {
       console.error(err);
     }

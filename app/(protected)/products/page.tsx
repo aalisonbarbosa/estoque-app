@@ -1,11 +1,13 @@
 "use client";
 
-import { CreateProductModal } from "@/components/CreateProductModal";
-import { PaginationControls } from "@/components/PaginationControls";
-import { ProductTable } from "@/components/ProductTable";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { getProductsByStore } from "@/lib/actions/products";
+import { useSession } from "next-auth/react";
+
+import { getProductsByStore } from "@/lib/actions/product";
+
+import { CreateProductModal } from "@/components/CreateProductModal";
+import { ProductTable } from "@/components/ProductTable";
+import { PaginationControls } from "@/components/PaginationControls";
 
 type Product = {
   id: string;
@@ -75,7 +77,6 @@ export default function Products() {
       {isVisible && (
         <CreateProductModal
           onToggle={toggleVisible}
-          onProductCreated={handleProductCreated}
         />
       )}
 
