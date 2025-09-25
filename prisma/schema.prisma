@@ -93,7 +93,7 @@ model Movement {
   productId    String
   product      Product  @relation(fields: [productId], references: [id])
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   store        Store    @relation(fields: [storeId], references: [id])
 }
 

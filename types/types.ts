@@ -1,11 +1,9 @@
 export interface MovementDB {
-  id: string;
   productId: string;
   movementType: string;
   quantity: number;
   userId: string;
   storeId: string;
-  date: string;
 }
 
 export interface MovementTable {

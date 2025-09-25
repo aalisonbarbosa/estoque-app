@@ -5,28 +5,29 @@ import { useSession } from "next-auth/react";
 
 import { getMovements } from "@/lib/actions/movement";
 
-import { CreateMovementModal } from "@/components/CreateMovementModal";
-import { MovementsTable } from "@/components/MovementsTable";
-import { PaginationControls } from "@/components/PaginationControls";
+import { CreateMovementModal } from "@/components/movements/CreateMovementModal";
+import { MovementsTable } from "@/components/movements/MovementsTable";
+import { PaginationControls } from "@/components/ui/PaginationControls";
 import { MovementTable } from "@/types/types";
+import { Loading } from "@/components/ui/Loading";
 
 export default function Transactions() {
-  const [isVisible, setIsvisible] = useState<boolean>(false);
-
+  const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
   const { data: session } = useSession();
 
-  function toggleVisible() {
-    setIsvisible((prev) => !prev);
-  }
-
-  const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
+  const [isVisible, setIsvisible] = useState<boolean>(false);
 
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(4);
 
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [refresh, setRefresh] = useState(0);
+
   useEffect(() => {
     async function fetchMovements() {
       try {
+        setLoading(true);
         const res = (await getMovements(session?.user.storeId!)) ?? [];
 
         const formatted: MovementTable[] = res.map((m) => ({
@@ -43,13 +44,15 @@ export default function Transactions() {
         }));
 
         setAllMovements(formatted);
+
+        setLoading(false);
       } catch (err) {
         console.error(err);
       }
     }
 
     fetchMovements();
-  }, [session?.user.storeId]);
+  }, [session?.user.storeId, refresh]);
 
   const movements: MovementTable[] = allMovements.slice(inicio, fim);
 
@@ -67,14 +70,19 @@ export default function Transactions() {
     }
   }
 
+  function toggleVisible() {
+    setIsvisible((prev) => !prev);
+  }
+
   return (
     <>
       {isVisible && (
         <CreateMovementModal
           onToggle={toggleVisible}
+          onCreated={() => setRefresh((prev) => prev + 1)}
         />
       )}
-      <section className="space-y-4">
+      <div className="space-y-4">
         <h1 className="text-2xl font-bold">Movimentações</h1>
         <button
           onClick={toggleVisible}
@@ -82,7 +90,9 @@ export default function Transactions() {
         >
           Nova Movimentação
         </button>
-        {movements.length === 0 ? (
+        {loading ? (
+          <Loading />
+        ) : movements.length === 0 ? (
           <p>Nenhuma movimentação encontrada.</p>
         ) : (
           <div className="bg-white rounded-xl p-2 space-y-4">
@@ -92,7 +102,7 @@ export default function Transactions() {
             )}
           </div>
         )}
-      </section>
+      </div>
     </>
   );
 }

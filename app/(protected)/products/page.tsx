@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import { getProductsByStore } from "@/lib/actions/product";
+import { getProducts } from "@/lib/actions/product";
 
-import { CreateProductModal } from "@/components/CreateProductModal";
-import { ProductTable } from "@/components/ProductTable";
-import { PaginationControls } from "@/components/PaginationControls";
+import { CreateProductModal } from "@/components/products/CreateProductModal";
+import { ProductTable } from "@/components/products/ProductTable";
+import { PaginationControls } from "@/components/ui/PaginationControls";
+import { Loading } from "@/components/ui/Loading";
 
 type Product = {
   id: string;
@@ -26,13 +27,15 @@ export default function Products() {
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(5);
 
+  const [refresh, setRefresh] = useState(0);
+
   useEffect(() => {
     async function fetchProducts() {
       if (!session?.user.storeId) return;
 
       setLoading(true);
 
-      const products = (await getProductsByStore(session.user.storeId)) ?? [];
+      const products = (await getProducts(session.user.storeId)) ?? [];
 
       const formatted: Product[] = products.map((p) => ({
         id: p.id,
@@ -46,7 +49,7 @@ export default function Products() {
     }
 
     fetchProducts();
-  }, []);
+  }, [!session?.user.storeId, refresh]);
 
   const productsSlice = allProducts.slice(inicio, fim);
 
@@ -68,19 +71,16 @@ export default function Products() {
     }
   }
 
-  function handleProductCreated(newProduct: Product) {
-    setAllProducts((prev) => [newProduct, ...prev]);
-  }
-
   return (
     <>
       {isVisible && (
         <CreateProductModal
           onToggle={toggleVisible}
+          onCreated={() => setRefresh((prev) => prev + 1)}
         />
       )}
 
-      <section className="space-y-4">
+      <div className="space-y-4">
         <h1 className="text-2xl font-bold">Produtos</h1>
         <button
           onClick={toggleVisible}
@@ -90,7 +90,7 @@ export default function Products() {
         </button>
 
         {loading ? (
-          <p>Buscando produtos...</p>
+          <Loading />
         ) : allProducts.length === 0 ? (
           <p>Nenhum produto encontrado.</p>
         ) : (
@@ -101,7 +101,7 @@ export default function Products() {
             )}
           </div>
         )}
-      </section>
+      </div>
     </>
   );
 }
