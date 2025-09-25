@@ -17,10 +17,26 @@ export async function createProduct(product: Product) {
     });
 }
 
-export async function getProductsByStore(storeId: string) {
+export async function getProducts(storeId: string) {
     return await prisma.product.findMany({
         where: {
             storeId,
+        },
+        orderBy: { name: "asc" },
+    });
+}
+
+export async function getQtdProducts(storeId: string) {
+    return await prisma.product.count({
+        where: { storeId }
+    });
+}
+
+export async function getOutOfStockProducts(storeId: string) {
+    return await prisma.product.count({
+        where: {
+            storeId,
+            quantity: 0
         }
     })
 }

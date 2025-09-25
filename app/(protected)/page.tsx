@@ -3,20 +3,27 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import { getMovements } from "@/lib/actions/movement";
+import { getMovements, getTodayMovements } from "@/lib/actions/movement";
 
 import { MovementTable } from "@/types/types";
 
-import { MovementsTable } from "@/components/MovementsTable";
+import { MovementsTable } from "@/components/movements/MovementsTable";
+import { getOutOfStockProducts, getQtdProducts } from "@/lib/actions/product";
 
 export default function Dashboard() {
   const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [outOfStockProducts, setOutOfStockProducts] = useState(0);
+  const [todayMovements, setTodayMovements] = useState(0);
+
   const { data: session } = useSession();
+
+  const storeId = session?.user.storeId!;
 
   useEffect(() => {
     async function fetchMovements() {
       try {
-        const res = (await getMovements(session?.user.storeId!)) ?? [];
+        const res = (await getMovements(storeId)) ?? [];
 
         const formatted: MovementTable[] = res.map((m) => ({
           productId: m.productId,
@@ -41,32 +48,38 @@ export default function Dashboard() {
       }
     }
 
+    async function getDashboardStats() {
+      try {
+        setTotalProducts(await getQtdProducts(storeId));
+        setTodayMovements(await getTodayMovements(storeId));
+        setOutOfStockProducts(await getOutOfStockProducts(storeId));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     fetchMovements();
+    getDashboardStats();
   }, []);
 
   const movement = allMovements.slice(0, 3);
 
   return (
     <>
-      <header className="flex justify-between items-center mb-4">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="px-4 py-2 max-w-40 rounded-md shadow"
-        />
-        <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-      </header>
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Dashboard</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-md p-4 shadow">
-            Produtos Cadastrados: <span className="font-bold">120</span>
+            Produtos Cadastrados:
+            <span className="font-bold"> {totalProducts}</span>
           </div>
           <div className="bg-white rounded-md p-4 shadow">
-            Produtos em Falta: <span className="font-bold">5</span>
+            Produtos em Falta:
+            <span className="font-bold text-red-500"> {outOfStockProducts}</span>
           </div>
           <div className="bg-white rounded-md p-4 shadow">
-            Movimentações Hoje: <span className="font-bold">18</span>
+            Movimentações Hoje:
+            <span className="font-bold"> {todayMovements}</span>
           </div>
         </div>
 
