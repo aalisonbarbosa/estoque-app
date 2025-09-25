@@ -33,7 +33,7 @@ export const auth = NextAuth({
 
       if (user) {
         token.id = user.id;
-        token.role = user.role ?? "EMPLOYEE";
+        token.role = user.role ?? null;
         token.storeId = user.storeId;
       }
       return token;
@@ -41,7 +41,7 @@ export const auth = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = (token.role as string) ?? "EMPLOYEE";
+        session.user.role = (token.role as string) ?? null;
         session.user.storeId = token.storeId as string;
       }
       return session;
