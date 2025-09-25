@@ -3,6 +3,7 @@
 import { Popup } from "@/components/ui/Popup";
 import { useAuth } from "@/context/AuthContext";
 import { createUser, deleteUser, getUsersByStore } from "@/lib/actions/user";
+import { User, UserBD } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import bcrypt from "bcryptjs";
 import { useSession } from "next-auth/react";
@@ -11,12 +12,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-type User = {
-  name: string;
-  email: string;
-  password: string;
-  storeId: string;
-};
 
 const schemaNewUser = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -33,7 +28,7 @@ export default function Settings() {
 
   const { data: session } = useSession();
 
-  const [users, setUsers] = useState<any[]>();
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [error, setError] = useState("");
@@ -53,7 +48,7 @@ export default function Settings() {
       setLoading(true);
       const hashPassword = await bcrypt.hash(formData.password, 10);
 
-      const formattedUser: User = {
+      const formattedUser: UserBD = {
         name: formData.name,
         email: formData.email,
         password: hashPassword,
@@ -77,7 +72,14 @@ export default function Settings() {
     async function getUsers() {
       const res = await getUsersByStore(session?.user.storeId!);
 
-      setUsers(res);
+      const formattedUser: User[] = res.map((user) => ({
+        id: user.id,
+        name: user.name!,
+        email: user.email!,
+        role: user.role,
+      }));
+
+      setUsers(formattedUser);
     }
 
     getUsers();
@@ -130,7 +132,7 @@ export default function Settings() {
           <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
         <input
-          type="text"
+          type="password"
           placeholder="Senha"
           {...register("password")}
           className="p-2 w-full rounded-md shadow"
@@ -165,14 +167,17 @@ export default function Settings() {
               <td className="p-2">{user.name}</td>
               <td className="p-2">{user.email}</td>
               <td className="p-2">{user.role}</td>
+
               <td className="p-2">
-                Editar |{" "}
-                <button
-                  className="cursor-pointer"
-                  onClick={() => handleDelete(user.email)}
-                >
-                  Excluir
-                </button>
+                Editar{" "}
+                {user.role !== "ADMIN" && (
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => handleDelete(user.email)}
+                  >
+                    | Excluir
+                  </button>
+                )}
               </td>
             </tr>
           ))}

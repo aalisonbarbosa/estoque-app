@@ -16,6 +16,20 @@ export interface MovementTable {
   storeId?: string;
 }
 
+export type UserBD = {
+  name: string;
+  email: string;
+  password: string;
+  storeId: string;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: string | null;
+};
+
 export interface Product {
   id: string;
   name: string;
