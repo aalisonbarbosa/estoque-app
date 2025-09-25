@@ -23,7 +23,7 @@ export const ProductTable = ({ products }: ProductTableProps) => {
         <tr>
           <td className="p-2 font-bold">Código</td>
           <td className="p-2 font-bold">Nome</td>
-          <td className="p-2 font-bold">Qtd</td>
+          <td className="p-2 font-bold">Quantidade</td>
           <td className="p-2 font-bold">Preço</td>
           {isAdmin && <td className="p-2 font-bold">Ações</td>}
         </tr>

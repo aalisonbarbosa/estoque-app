@@ -11,14 +11,17 @@ import { createSupplier } from "@/lib/actions/supplier";
 
 import { ProductSchema, productSchema } from "@/lib/schemas/product";
 
-import { Category, Product, Supplier } from "@/types/types";
+import { Category, Supplier } from "@/types/types";
 
 type Props = {
   onToggle: () => void;
+  onCreated: () => void;
 };
 
-
-export const CreateProductModal = ({onToggle}: Props) => {
+export const CreateProductModal = ({ onToggle, onCreated }: Props) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState("");
   const { data: session } = useSession();
 
   const {
@@ -31,13 +34,14 @@ export const CreateProductModal = ({onToggle}: Props) => {
 
   async function onSubmit(data: ProductSchema) {
     try {
+      setLoading(true);
       const supplier: Supplier = await createSupplier(data.supplierName);
 
       if (!session?.user.storeId) {
         throw new Error("Store ID não encontrado");
       }
 
-      const product: Product = await createProduct({
+      await createProduct({
         name: data.name,
         quantity: data.quantity,
         price: data.price,
@@ -46,19 +50,21 @@ export const CreateProductModal = ({onToggle}: Props) => {
         storeId: session.user.storeId,
       });
 
-      console.log("Product created:", product);
+      onCreated();
+      onToggle();
     } catch (err) {
-      console.error("Error:", err);
+      console.error(err);
+      setError("Erro ao criar o produto. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
     }
   }
-
-  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     async function fetchCategories() {
       try {
         const categories = await getCategories();
-        
+
         setCategories(categories);
       } catch (err) {
         console.error(err);
@@ -96,6 +102,7 @@ export const CreateProductModal = ({onToggle}: Props) => {
             type="number"
             placeholder="Preço"
             className="p-2 w-full rounded-md shadow"
+            step="any"
             {...register("price")}
           />
           {errors.price && (
@@ -131,6 +138,7 @@ export const CreateProductModal = ({onToggle}: Props) => {
           {errors.categoryId && (
             <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
           )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex items-center gap-4">
             <button
               onClick={onToggle}
@@ -142,8 +150,9 @@ export const CreateProductModal = ({onToggle}: Props) => {
             <button
               type="submit"
               className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
+              disabled={loading}
             >
-              Criar produto
+              {loading ? "Carregando..." : "Criar produto"}
             </button>
           </div>
         </form>

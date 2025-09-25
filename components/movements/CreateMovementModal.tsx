@@ -6,17 +6,18 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
 import { registerMovement } from "@/lib/actions/movement";
-import { getProductsByStore } from "@/lib/actions/product";
+import { getProducts } from "@/lib/actions/product";
 
 import { MovementSchema, movementSchema } from "@/lib/schemas/movement";
 
-import { Movement, Product } from "@/types/types";
+import { MovementDB, Product } from "@/types/types";
 
 type Props = {
   onToggle: () => void;
+  onCreated: () => void;
 };
 
-export const CreateMovementModal = ({ onToggle }: Props) => {
+export const CreateMovementModal = ({ onToggle, onCreated }: Props) => {
   const {
     register,
     handleSubmit,
@@ -25,14 +26,16 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
     resolver: zodResolver(movementSchema),
   });
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState("");
   const { data: session } = useSession();
 
-  useEffect(() => {
-    async function getProducts() {
-      try {
-        if (!session?.user.storeId) return;
+  const storeId = session?.user.storeId!;
 
-        const res = (await getProductsByStore(session.user.storeId)) ?? [];
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = (await getProducts(storeId)) ?? [];
 
         const formatted: Product[] = res.map((p) => ({
           id: p.id,
@@ -46,11 +49,12 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
       }
     }
 
-    getProducts();
+    fetchProducts();
   }, []);
 
   async function onSubmit(formData: MovementSchema) {
     try {
+      setLoading(true);
       if (!session?.user.storeId || !session?.user.id)
         throw new Error("User ID ou store ID não encontrado");
 
@@ -59,7 +63,8 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
       )?.quantity;
 
       if (existingQuantity === undefined) {
-        throw new Error("Produto não encontrado");
+        setError("Produto não encontrado");
+        return;
       }
 
       const updatedQuantity =
@@ -68,18 +73,24 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
           : existingQuantity - formData.quantity;
 
       if (updatedQuantity < 0) {
-        throw new Error("Quantidade insuficiente em estoque");
+        setError("Quantidade insuficiente em estoque");
+        return;
       }
 
-      const movementData: Movement = {
+      const movementData: MovementDB = {
         ...formData,
         userId: session.user.id,
         storeId: session.user.storeId,
       };
 
       await registerMovement(movementData, updatedQuantity);
+
+      onCreated();
+      onToggle();
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -90,6 +101,7 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
         <h2 className="text-xl font-bold">Nova movimentação</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <select
+            defaultValue=""
             className="p-2 rounded-md block shadow"
             {...register("productId")}
           >
@@ -129,6 +141,7 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
           {errors.quantity && (
             <p className="text-red-500 text-sm">{errors.quantity.message}</p>
           )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex items-center gap-4">
             <button
               onClick={onToggle}
@@ -140,8 +153,9 @@ export const CreateMovementModal = ({ onToggle }: Props) => {
             <button
               type="submit"
               className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
+              disabled={loading}
             >
-              Criar movimentação
+              {loading ? "Carregando..." : "Criar movimentação"}
             </button>
           </div>
         </form>
