@@ -37,6 +37,7 @@ export async function createStore(store: Store, admin: Admin) {
                 name: admin.name,
                 email: admin.email,
                 password: hashPassword,
+                role: "ADMIN",
                 storeId: (await createdStore).id
             }
         })
