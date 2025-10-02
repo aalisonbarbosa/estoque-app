@@ -22,7 +22,7 @@ export const Sidebar = () => {
           <li>
             <Link
               href="/products"
-              className="block text-gray-700 hover:text-blue-600"
+              className="cursor-pointer text-gray-700 hover:text-blue-600"
             >
               Produtos
             </Link>
@@ -30,7 +30,7 @@ export const Sidebar = () => {
           <li>
             <Link
               href="/transactions"
-              className="block text-gray-700 hover:text-blue-600"
+              className="cursor-pointer text-gray-700 hover:text-blue-600"
             >
               Movimentações
             </Link>
@@ -38,7 +38,7 @@ export const Sidebar = () => {
           <li>
             <Link
               href="/reports"
-              className="block text-gray-700 hover:text-blue-600"
+              className="cursor-pointer text-gray-700 hover:text-blue-600"
             >
               Relatórios
             </Link>
@@ -47,7 +47,7 @@ export const Sidebar = () => {
             <li>
               <Link
                 href="/settings"
-                className="block text-gray-700 hover:text-blue-600"
+                className="cursor-pointer text-gray-700 hover:text-blue-600"
               >
                 Configurações
               </Link>
@@ -56,7 +56,7 @@ export const Sidebar = () => {
           {session && (
             <li>
               <button
-                className="block text-gray-700 hover:text-blue-600"
+                className="cursor-pointer text-gray-700 hover:text-blue-600"
                 onClick={() => signOut()}
               >
                 Sair
