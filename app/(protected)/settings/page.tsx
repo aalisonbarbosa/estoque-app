@@ -3,6 +3,7 @@
 import { Popup } from "@/components/ui/Popup";
 import { useAuth } from "@/context/AuthContext";
 import { createUser, deleteUser, getUsersByStore } from "@/lib/actions/user";
+import { SchemaNewUser, schemaNewUser } from "@/lib/schemas/user";
 import { User, UserBD } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import bcrypt from "bcryptjs";
@@ -10,16 +11,6 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
-
-
-const schemaNewUser = z.object({
-  name: z.string().min(1, "Nome é obrigatório"),
-  email: z.string().min(1, "Email é obrigatório"),
-  password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
-});
-
-type schemaNewUser = z.infer<typeof schemaNewUser>;
 
 export default function Settings() {
   const { isAdmin } = useAuth();
@@ -43,7 +34,7 @@ export default function Settings() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schemaNewUser) });
 
-  async function onSubmit(formData: schemaNewUser) {
+  async function onSubmit(formData: SchemaNewUser) {
     try {
       setLoading(true);
       const hashPassword = await bcrypt.hash(formData.password, 10);
