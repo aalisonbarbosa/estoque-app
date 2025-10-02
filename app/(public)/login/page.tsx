@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import z from "zod";
+import { Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -18,6 +19,7 @@ type LoginSchema = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -66,12 +68,21 @@ export default function LoginPage() {
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email.message}</p>
           )}
-          <input
-            type="password"
-            placeholder="Senha"
-            className="w-full border rounded px-4 py-2"
-            {...register("password")}
-          />
+          <div className="relative w-full">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              className="w-full border rounded px-4 py-2"
+              {...register("password")}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 cursor-pointer"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}

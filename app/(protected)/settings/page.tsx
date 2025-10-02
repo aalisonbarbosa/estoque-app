@@ -7,6 +7,7 @@ import { SchemaNewUser, schemaNewUser } from "@/lib/schemas/user";
 import { User, UserBD } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import bcrypt from "bcryptjs";
+import { Eye, EyeOff } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ export default function Settings() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState<"sucess" | "error">("sucess");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -122,12 +124,21 @@ export default function Settings() {
         {errors.email && (
           <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
-        <input
-          type="password"
-          placeholder="Senha"
-          {...register("password")}
-          className="p-2 w-full rounded-md shadow"
-        />
+        <div className="relative w-full">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            {...register("password")}
+            className="p-2 w-full rounded-md shadow"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 cursor-pointer"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
