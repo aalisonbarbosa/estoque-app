@@ -74,6 +74,14 @@ export default function Transactions() {
     setIsvisible((prev) => !prev);
   }
 
+  if (loading) {
+    return (
+      <div className="h-full">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <>
       {isVisible && (
@@ -90,9 +98,8 @@ export default function Transactions() {
         >
           Nova Movimentação
         </button>
-        {loading ? (
-          <Loading />
-        ) : movements.length === 0 ? (
+
+        {movements.length === 0 ? (
           <p>Nenhuma movimentação encontrada.</p>
         ) : (
           <div className="bg-white rounded-xl p-2 space-y-4">

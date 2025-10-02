@@ -71,6 +71,14 @@ export default function Products() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="h-full">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <>
       {isVisible && (
@@ -80,7 +88,7 @@ export default function Products() {
         />
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-4 h-full">
         <h1 className="text-2xl font-bold">Produtos</h1>
         <button
           onClick={toggleVisible}
@@ -89,9 +97,7 @@ export default function Products() {
           Novo Produto
         </button>
 
-        {loading ? (
-          <Loading />
-        ) : allProducts.length === 0 ? (
+        {allProducts.length === 0 ? (
           <p>Nenhum produto encontrado.</p>
         ) : (
           <div className="bg-white rounded-xl p-2">
