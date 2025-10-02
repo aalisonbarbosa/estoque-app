@@ -7,12 +7,17 @@ import { useRouter } from "next/navigation";
 
 import { createStore } from "@/lib/actions/store";
 
-import { storeRegistrationSchema, StoreRegistrationSchema } from "@/lib/schemas/store";
+import {
+  storeRegistrationSchema,
+  StoreRegistrationSchema,
+} from "@/lib/schemas/store";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterStorePage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -141,12 +146,21 @@ export default function RegisterStorePage() {
                     {errors.adminEmail.message}
                   </p>
                 )}
-                <input
-                  type="password"
-                  placeholder="Senha"
-                  className="w-full border rounded px-4 py-2"
-                  {...register("password")}
-                />
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Senha"
+                    className="w-full border rounded px-4 py-2"
+                    {...register("password")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm">
                     {errors.password.message}
