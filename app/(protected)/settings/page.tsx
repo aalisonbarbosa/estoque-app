@@ -13,6 +13,8 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+// refatora essa codigo em componentes de form e tabela
+
 export default function Settings() {
   const { isAdmin } = useAuth();
 

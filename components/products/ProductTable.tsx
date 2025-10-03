@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { deleteProduct } from "@/lib/actions/product";
 
 type Product = {
   id: string;
@@ -9,13 +10,26 @@ type Product = {
   price: number;
 };
 
-
 type ProductTableProps = {
   products: Product[];
+  onDelete: ()=> void;
+  onPopup: (message: string, type: "success" | "error") => void;
 };
 
-export const ProductTable = ({ products }: ProductTableProps) => {
+export const ProductTable = ({ products, onPopup, onDelete }: ProductTableProps) => {
   const { isAdmin } = useAuth();
+
+  async function handleDelete(id: string) {
+    try {
+      await deleteProduct(id);
+
+      onDelete();
+      onPopup("Produto removido!", "success");
+    } catch (err) {
+      console.error(err);
+      onPopup("Erro ao excluir produto!", "error");
+    }
+  }
 
   return (
     <table className="w-full text-left">
@@ -35,7 +49,14 @@ export const ProductTable = ({ products }: ProductTableProps) => {
             <td className="p-2">{product.name}</td>
             <td className="p-2">{product.quantity}</td>
             <td className="p-2">{product.price}</td>
-            {isAdmin && <td className="p-2">Editar | Excluir</td>}
+            {isAdmin && (
+              <td className="p-2">
+                Editar |{" "}
+                <button className="cursor-pointer" onClick={() => handleDelete(product.id)}>
+                  Excluir
+                </button>
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

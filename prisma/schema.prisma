@@ -91,7 +91,7 @@ model Movement {
   date         DateTime @default(now())
   storeId      String
   productId    String
-  product      Product  @relation(fields: [productId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   store        Store    @relation(fields: [storeId], references: [id])
