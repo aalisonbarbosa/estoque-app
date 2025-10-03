@@ -15,9 +15,14 @@ import { MovementDB, Product } from "@/types/types";
 type Props = {
   onToggle: () => void;
   onCreated: () => void;
+  onPopup: (message: string, type: "success" | "error") => void;
 };
 
-export const CreateMovementModal = ({ onToggle, onCreated }: Props) => {
+export const CreateMovementModal = ({
+  onToggle,
+  onCreated,
+  onPopup,
+}: Props) => {
   const {
     register,
     handleSubmit,
@@ -87,8 +92,10 @@ export const CreateMovementModal = ({ onToggle, onCreated }: Props) => {
 
       onCreated();
       onToggle();
+      onPopup("Movimentação criada!", "success");
     } catch (err) {
       console.error(err);
+      onPopup("Error ao criar movimentação!", "error");
     } finally {
       setLoading(false);
     }

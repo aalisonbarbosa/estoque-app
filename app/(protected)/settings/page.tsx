@@ -26,7 +26,7 @@ export default function Settings() {
   const [error, setError] = useState("");
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const [popupType, setPopupType] = useState<"sucess" | "error">("sucess");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -51,7 +51,7 @@ export default function Settings() {
       await createUser(formattedUser);
 
       setRefresh((prev) => prev + 1);
-      notifyPopup("Usuário criado!", "sucess");
+      notifyPopup("Usuário criado!", "success");
       reset();
     } catch (err) {
       console.error(err);
@@ -78,7 +78,7 @@ export default function Settings() {
     getUsers();
   }, [refresh]);
 
-  function notifyPopup(message: string, type: "sucess" | "error") {
+  function notifyPopup(message: string, type: "success" | "error") {
     setIsPopupVisible(true);
 
     setPopupMessage(message);
@@ -95,7 +95,7 @@ export default function Settings() {
 
       setRefresh((prev) => prev + 1);
 
-      notifyPopup("Usuário deletado!", "sucess");
+      notifyPopup("Usuário deletado!", "success");
     } catch (err) {
       console.error(err);
       notifyPopup("Erro ao deletar usuário!", "error");

@@ -9,6 +9,7 @@ import { CreateProductModal } from "@/components/products/CreateProductModal";
 import { ProductTable } from "@/components/products/ProductTable";
 import { PaginationControls } from "@/components/ui/PaginationControls";
 import { Loading } from "@/components/ui/Loading";
+import { Popup } from "@/components/ui/Popup";
 
 type Product = {
   id: string;
@@ -28,6 +29,10 @@ export default function Products() {
   const [fim, setFim] = useState(5);
 
   const [refresh, setRefresh] = useState(0);
+
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -71,6 +76,17 @@ export default function Products() {
     }
   }
 
+  function notifyPopup(message: string, type: "success" | "error") {
+    setIsPopupVisible(true);
+
+    setPopupMessage(message);
+    setPopupType(type);
+
+    setTimeout(() => {
+      setIsPopupVisible(false);
+    }, 5000);
+  }
+
   if (loading) {
     return (
       <div className="h-full">
@@ -85,6 +101,7 @@ export default function Products() {
         <CreateProductModal
           onToggle={toggleVisible}
           onCreated={() => setRefresh((prev) => prev + 1)}
+          onPopup={notifyPopup}
         />
       )}
 
@@ -108,6 +125,11 @@ export default function Products() {
           </div>
         )}
       </div>
+      <Popup
+        isPopupVisible={isPopupVisible}
+        message={popupMessage}
+        type={popupType}
+      />
     </>
   );
 }
