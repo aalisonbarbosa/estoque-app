@@ -10,6 +10,7 @@ import { MovementsTable } from "@/components/movements/MovementsTable";
 import { PaginationControls } from "@/components/ui/PaginationControls";
 import { MovementTable } from "@/types/types";
 import { Loading } from "@/components/ui/Loading";
+import { Popup } from "@/components/ui/Popup";
 
 export default function Transactions() {
   const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
@@ -23,6 +24,10 @@ export default function Transactions() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const [refresh, setRefresh] = useState(0);
+
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   useEffect(() => {
     async function fetchMovements() {
@@ -44,7 +49,7 @@ export default function Transactions() {
         }));
 
         setAllMovements(formatted);
-
+        
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -82,12 +87,24 @@ export default function Transactions() {
     );
   }
 
+  function notifyPopup(message: string, type: "success" | "error") {
+    setIsPopupVisible(true);
+
+    setPopupMessage(message);
+    setPopupType(type);
+
+    setTimeout(() => {
+      setIsPopupVisible(false);
+    }, 5000);
+  }
+
   return (
     <>
       {isVisible && (
         <CreateMovementModal
           onToggle={toggleVisible}
           onCreated={() => setRefresh((prev) => prev + 1)}
+          onPopup={notifyPopup}
         />
       )}
       <div className="space-y-4">
@@ -110,6 +127,11 @@ export default function Transactions() {
           </div>
         )}
       </div>
+      <Popup
+        isPopupVisible={isPopupVisible}
+        message={popupMessage}
+        type={popupType}
+      />
     </>
   );
 }

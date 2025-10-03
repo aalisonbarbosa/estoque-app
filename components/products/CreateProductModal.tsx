@@ -16,9 +16,10 @@ import { Category, Supplier } from "@/types/types";
 type Props = {
   onToggle: () => void;
   onCreated: () => void;
+  onPopup: (message: string, type: "success" | "error") => void;
 };
 
-export const CreateProductModal = ({ onToggle, onCreated }: Props) => {
+export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
@@ -52,6 +53,7 @@ export const CreateProductModal = ({ onToggle, onCreated }: Props) => {
 
       onCreated();
       onToggle();
+      onPopup("Produto criado!", "success")
     } catch (err) {
       console.error(err);
       setError("Erro ao criar o produto. Por favor, tente novamente.");
