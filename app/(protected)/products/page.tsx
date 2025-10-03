@@ -118,7 +118,11 @@ export default function Products() {
           <p>Nenhum produto encontrado.</p>
         ) : (
           <div className="bg-white rounded-xl p-2">
-            <ProductTable products={productsSlice} />
+            <ProductTable
+              products={productsSlice}
+              onPopup={notifyPopup}
+              onDelete={() => setRefresh((prev) => prev + 1)}
+            />
             {allProducts.length > 5 && (
               <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
             )}

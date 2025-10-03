@@ -1,5 +1,6 @@
 "use server";
 
+import { afterEach } from "node:test";
 import { prisma } from "../prisma";
 
 type Product = {
@@ -37,6 +38,14 @@ export async function getOutOfStockProducts(storeId: string) {
         where: {
             storeId,
             quantity: 0
+        }
+    })
+}
+
+export async function deleteProduct(id: string) {
+    return await prisma.product.delete({
+        where: {
+            id
         }
     })
 }
