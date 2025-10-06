@@ -12,6 +12,7 @@ import {
   StoreRegistrationSchema,
 } from "@/lib/schemas/store";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export default function RegisterStorePage() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -109,13 +110,12 @@ export default function RegisterStorePage() {
                   <p className="text-red-500 text-sm">{errors.taxId.message}</p>
                 )}
               </div>
-              <button
+              <Button
+                label="Próximo"
                 type="button"
                 onClick={handleNextStep}
-                className="w-full bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600 cursor-pointer"
-              >
-                Próximo
-              </button>
+                customClass="w-full"
+              />
             </>
           )}
           {step === 2 && (
@@ -172,13 +172,14 @@ export default function RegisterStorePage() {
                   {errorMessage}
                 </div>
               )}
-              <button
+              <Button
+                label={
+                  loading ? "carregando..." : "Cadastrar Loja e Administrador"
+                }
+                customClass="w-full"
                 type="submit"
-                className="w-full bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600 cursor-pointer"
                 disabled={loading}
-              >
-                {loading ? "carregando..." : "Cadastrar Loja e Administrador"}
-              </button>
+              />
             </>
           )}
         </form>

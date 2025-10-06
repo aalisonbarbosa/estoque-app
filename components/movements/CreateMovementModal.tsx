@@ -11,6 +11,8 @@ import { getProducts } from "@/lib/actions/product";
 import { MovementSchema, movementSchema } from "@/lib/schemas/movement";
 
 import { MovementDB, Product } from "@/types/types";
+import { Modal } from "../ui/Modal";
+import { Button } from "../ui/Button";
 
 type Props = {
   onToggle: () => void;
@@ -102,71 +104,59 @@ export const CreateMovementModal = ({
   }
 
   return (
-    <>
-      <div className="absolute inset-0 bg-black/50 z-10" />
-      <div className="absolute top-1/2 left-1/2 w-96 p-4 space-y-4 bg-white rounded-xl z-20 transform -translate-x-1/2 -translate-y-1/2">
-        <h2 className="text-xl font-bold">Nova movimentação</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <select
-            defaultValue=""
-            className="p-2 rounded-md block shadow"
-            {...register("productId")}
-          >
-            <option value="" disabled>
-              Escolha o produto
+    <Modal>
+      <h2 className="text-xl font-bold">Nova movimentação</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <select
+          defaultValue=""
+          className="p-2 rounded-md block shadow"
+          {...register("productId")}
+        >
+          <option value="" disabled>
+            Escolha o produto
+          </option>
+          {products.map((p) => (
+            <option value={p.id} key={p.id}>
+              {p.name}
             </option>
-            {products.map((p) => (
-              <option value={p.id} key={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          {errors.productId && (
-            <p className="text-red-500 text-sm">{errors.productId.message}</p>
-          )}
-          <select
-            className="p-2 rounded-md block shadow"
-            {...register("movementType")}
-          >
-            <option value="" disabled>
-              Tipo da movimentação
-            </option>
-            <option value="income">Entrada</option>
-            <option value="expense">Saída</option>
-          </select>
-          {errors.movementType && (
-            <p className="text-red-500 text-sm">
-              {errors.movementType.message}
-            </p>
-          )}
-          <input
-            type="number"
-            placeholder="Quantidade"
-            className="p-2 w-full rounded-md shadow"
-            {...register("quantity")}
+          ))}
+        </select>
+        {errors.productId && (
+          <p className="text-red-500 text-sm">{errors.productId.message}</p>
+        )}
+        <select
+          className="p-2 rounded-md block shadow"
+          defaultValue=""
+          {...register("movementType")}
+        >
+          <option value="" disabled>
+            Tipo da movimentação
+          </option>
+          <option value="income">Entrada</option>
+          <option value="expense">Saída</option>
+        </select>
+        {errors.movementType && (
+          <p className="text-red-500 text-sm">{errors.movementType.message}</p>
+        )}
+        <input
+          type="number"
+          placeholder="Quantidade"
+          className="p-2 w-full rounded-md shadow"
+          {...register("quantity")}
+        />
+        {errors.quantity && (
+          <p className="text-red-500 text-sm">{errors.quantity.message}</p>
+        )}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <div className="flex items-center gap-4">
+          <Button label="Cancelar" onClick={onToggle} type="button" />
+          <Button
+            label={loading ? "Carregando..." : "Criar movimentação"}
+            type="submit"
+            disabled={loading}
           />
-          {errors.quantity && (
-            <p className="text-red-500 text-sm">{errors.quantity.message}</p>
-          )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onToggle}
-              type="button"
-              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-              disabled={loading}
-            >
-              {loading ? "Carregando..." : "Criar movimentação"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+      </form>
+    </Modal>
   );
 };

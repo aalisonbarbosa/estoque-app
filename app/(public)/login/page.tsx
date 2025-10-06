@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import z from "zod";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const loginSchema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -87,12 +88,11 @@ export default function LoginPage() {
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
           {error && <p className="text-red-500">{error}</p>}
-          <button
+          <Button
+            customClass="w-full"
+            label={loading ? "Carregando..." : "Entrar"}
             disabled={loading}
-            className="w-full bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600 duration-300 cursor-pointer"
-          >
-            {loading ? "Carregando..." : "Entrar"}
-          </button>
+          />
         </form>
         <div className="text-center mt-4 space-x-5">
           <button className="text-blue-700 hover:underline cursor-pointer">

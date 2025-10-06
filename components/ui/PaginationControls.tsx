@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 type PaginationControlsProps = {
   onPrev: () => void;
   onNext: () => void;
@@ -8,18 +10,18 @@ export const PaginationControls = ({
   onNext,
 }: PaginationControlsProps) => {
   return (
-    <div className="flex justify-center items-center gap-2">
+    <div className="flex justify-start gap-2">
       <button
-        className="bg-stone-500 hover:bg-stone-600 duration-300 p-2 cursor-pointer rounded-md text-white"
         onClick={onPrev}
+        className="p-2 border rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
       >
-        Anterior
+        <ChevronLeft size={20} />
       </button>
       <button
-        className="bg-stone-500 hover:bg-stone-600 duration-300 p-2 cursor-pointer rounded-md text-white"
         onClick={onNext}
+        className="p-2 border rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
       >
-        Próximo
+        <ChevronRight size={20} />
       </button>
     </div>
   );

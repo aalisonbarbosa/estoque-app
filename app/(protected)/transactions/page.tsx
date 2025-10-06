@@ -11,6 +11,7 @@ import { PaginationControls } from "@/components/ui/PaginationControls";
 import { MovementTable } from "@/types/types";
 import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
+import { Button } from "@/components/ui/Button";
 
 export default function Transactions() {
   const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
@@ -49,7 +50,7 @@ export default function Transactions() {
         }));
 
         setAllMovements(formatted);
-        
+
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -109,12 +110,7 @@ export default function Transactions() {
       )}
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">Movimentações</h1>
-        <button
-          onClick={toggleVisible}
-          className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-        >
-          Nova Movimentação
-        </button>
+        <Button label="Nova movimentação" onClick={toggleVisible} />
 
         {movements.length === 0 ? (
           <p>Nenhuma movimentação encontrada.</p>

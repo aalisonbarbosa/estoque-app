@@ -8,7 +8,6 @@ const inter = Inter({
 });
 
 import { Providers } from "./providers";
-import { Sidebar } from "@/components/ui/Sidebar";
 
 export const metadata: Metadata = {
   title: "Estoque App",
@@ -23,10 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <div className="h-screen bg-gray-100 flex">
-            <Sidebar />
-            <main className="w-full p-4 relative">{children}</main>
-          </div>
+          {children}
         </Providers>
       </body>
     </html>

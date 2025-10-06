@@ -12,6 +12,8 @@ import { createSupplier } from "@/lib/actions/supplier";
 import { ProductSchema, productSchema } from "@/lib/schemas/product";
 
 import { Category, Supplier } from "@/types/types";
+import { Modal } from "../ui/Modal";
+import { Button } from "../ui/Button";
 
 type Props = {
   onToggle: () => void;
@@ -53,7 +55,7 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
 
       onCreated();
       onToggle();
-      onPopup("Produto criado!", "success")
+      onPopup("Produto criado!", "success");
     } catch (err) {
       console.error(err);
       setError("Erro ao criar o produto. Por favor, tente novamente.");
@@ -77,88 +79,75 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   }, []);
 
   return (
-    <>
-      <div className="absolute inset-0 bg-black/50 z-10" />
-      <div className="absolute top-1/2 left-1/2 w-96 p-4 space-y-4 bg-white rounded-xl z-20 transform -translate-x-1/2 -translate-y-1/2">
-        <h2 className="text-xl font-bold">Novo produto</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nome"
-            className="p-2 w-full rounded-md shadow"
-            {...register("name")}
+    <Modal>
+      <h2 className="text-xl font-bold">Novo produto</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Nome"
+          className="p-2 w-full rounded-md shadow"
+          {...register("name")}
+        />
+        {errors.name && (
+          <p className="text-red-500 text-sm">{errors.name.message}</p>
+        )}
+        <input
+          type="number"
+          placeholder="Quantidade"
+          className="p-2 w-full rounded-md shadow"
+          {...register("quantity")}
+        />
+        {errors.quantity && (
+          <p className="text-red-500 text-sm">{errors.quantity.message}</p>
+        )}
+        <input
+          type="number"
+          placeholder="Preço"
+          className="p-2 w-full rounded-md shadow"
+          step="any"
+          {...register("price")}
+        />
+        {errors.price && (
+          <p className="text-red-500 text-sm">{errors.price.message}</p>
+        )}
+        <input
+          type="text"
+          placeholder="Fornecedor"
+          className="p-2 w-full rounded-md shadow"
+          {...register("supplierName")}
+        />
+        {errors.supplierName && (
+          <p className="text-red-500 text-sm">{errors.supplierName.message}</p>
+        )}
+        <select
+          id="category"
+          defaultValue=""
+          className="p-2 rounded-md block shadow"
+          {...register("categoryId")}
+        >
+          <option value="" disabled>
+            Categoria
+          </option>
+          {Array.isArray(categories) &&
+            categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+        </select>
+        {errors.categoryId && (
+          <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
+        )}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <div className="flex items-center gap-4">
+          <Button label="Cancelar" onClick={onToggle} type="button" />
+          <Button
+            label={loading ? "Carregando..." : "Criar produto"}
+            disabled={loading}
+            type="submit"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
-          )}
-          <input
-            type="number"
-            placeholder="Quantidade"
-            className="p-2 w-full rounded-md shadow"
-            {...register("quantity")}
-          />
-          {errors.quantity && (
-            <p className="text-red-500 text-sm">{errors.quantity.message}</p>
-          )}
-          <input
-            type="number"
-            placeholder="Preço"
-            className="p-2 w-full rounded-md shadow"
-            step="any"
-            {...register("price")}
-          />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price.message}</p>
-          )}
-          <input
-            type="text"
-            placeholder="Fornecedor"
-            className="p-2 w-full rounded-md shadow"
-            {...register("supplierName")}
-          />
-          {errors.supplierName && (
-            <p className="text-red-500 text-sm">
-              {errors.supplierName.message}
-            </p>
-          )}
-          <select
-            id="category"
-            defaultValue=""
-            className="p-2 rounded-md block shadow"
-            {...register("categoryId")}
-          >
-            <option value="" disabled>
-              Categoria
-            </option>
-            {Array.isArray(categories) &&
-              categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-          </select>
-          {errors.categoryId && (
-            <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
-          )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onToggle}
-              type="button"
-              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-              disabled={loading}
-            >
-              {loading ? "Carregando..." : "Criar produto"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+      </form>
+    </Modal>
   );
 };
