@@ -12,12 +12,19 @@ type Product = {
 
 type ProductTableProps = {
   products: Product[];
-  onDelete: ()=> void;
+  onDelete: () => void;
   onPopup: (message: string, type: "success" | "error") => void;
-  toggleVisible: ()=> void;
+  toggleVisible: () => void;
+  onUpdate: (product: Product) => void;
 };
 
-export const ProductTable = ({ products, onPopup, onDelete, toggleVisible }: ProductTableProps) => {
+export const ProductTable = ({
+  products,
+  onPopup,
+  onDelete,
+  toggleVisible,
+  onUpdate,
+}: ProductTableProps) => {
   const { isAdmin } = useAuth();
 
   async function handleDelete(id: string) {
@@ -52,8 +59,20 @@ export const ProductTable = ({ products, onPopup, onDelete, toggleVisible }: Pro
             <td className="p-2">{product.price}</td>
             {isAdmin && (
               <td className="p-2">
-                <button className="cursor-pointer" onClick={toggleVisible}>Editar</button> |
-                <button className="cursor-pointer" onClick={() => handleDelete(product.id)}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => {
+                    toggleVisible();
+                    onUpdate(product)
+                  }}
+                >
+                  Editar
+                </button>
+                |
+                <button
+                  className="cursor-pointer"
+                  onClick={() => handleDelete(product.id)}
+                >
                   Excluir
                 </button>
               </td>

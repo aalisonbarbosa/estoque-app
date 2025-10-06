@@ -1,14 +1,14 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type PaginationControlsProps = {
+type TablePaginationProps = {
   onPrev: () => void;
   onNext: () => void;
 };
 
-export const PaginationControls = ({
+export const TablePagination = ({
   onPrev,
   onNext,
-}: PaginationControlsProps) => {
+}: TablePaginationProps) => {
   return (
     <div className="flex justify-start gap-2">
       <button

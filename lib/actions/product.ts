@@ -1,6 +1,5 @@
 "use server";
 
-import { afterEach } from "node:test";
 import { prisma } from "../prisma";
 
 type Product = {
@@ -46,6 +45,24 @@ export async function deleteProduct(id: string) {
     return await prisma.product.delete({
         where: {
             id
+        }
+    })
+}
+
+type UpdateProductInput = {
+    id: string;
+    quantity: number;
+    price: number;
+}
+
+export async function updateProduct(product: UpdateProductInput) {
+    return await prisma.product.update({
+        where: {
+            id: product.id
+        },
+        data: {
+            quantity: product.quantity,
+            price: product.price
         }
     })
 }

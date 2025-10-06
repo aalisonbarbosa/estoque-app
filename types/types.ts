@@ -32,8 +32,9 @@ export type User = {
 
 export interface Product {
   id: string;
-  name: string;
+  name?: string;
   quantity: number;
+  price: number;
 }
 
 export interface Category {

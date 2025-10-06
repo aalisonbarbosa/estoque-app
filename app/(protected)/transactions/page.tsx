@@ -7,7 +7,7 @@ import { getMovements } from "@/lib/actions/movement";
 
 import { CreateMovementModal } from "@/components/movements/CreateMovementModal";
 import { MovementsTable } from "@/components/movements/MovementsTable";
-import { PaginationControls } from "@/components/ui/PaginationControls";
+import { TablePagination } from "@/components/ui/TablePagination";
 import { MovementTable } from "@/types/types";
 import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
@@ -118,7 +118,7 @@ export default function Transactions() {
           <div className="bg-white rounded-xl p-2 space-y-4">
             <MovementsTable movements={movements} />
             {allMovements.length > 5 && (
-              <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+              <TablePagination onPrev={handlerPrev} onNext={handlerNext} />
             )}
           </div>
         )}

@@ -7,11 +7,11 @@ import { getProducts } from "@/lib/actions/product";
 
 import { CreateProductModal } from "@/components/products/CreateProductModal";
 import { ProductTable } from "@/components/products/ProductTable";
-import { PaginationControls } from "@/components/ui/PaginationControls";
+import { TablePagination } from "@/components/ui/TablePagination";
 import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
-import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
+import { UpdateProductModal } from "@/components/products/UpdateProductModal";
 
 type Product = {
   id: string;
@@ -29,6 +29,8 @@ export default function Products() {
     useState<boolean>(false);
   const [updateModalIsvisible, setUpdateModalIsvisible] =
     useState<boolean>(false);
+
+  const [productSelected, setProductSelected] = useState<Product | null>(null);
 
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(5);
@@ -111,12 +113,11 @@ export default function Products() {
       )}
 
       {updateModalIsvisible && (
-        <Modal>
-          <h1>oi</h1>
-          <button onClick={() => setUpdateModalIsvisible((prev) => !prev)}>
-            sair
-          </button>
-        </Modal>
+        <UpdateProductModal
+          onToggle={() => setUpdateModalIsvisible((prev) => !prev)}
+          product={productSelected}
+          onCreated={() => setRefresh((prev) => prev + 1)}
+        />
       )}
 
       <div className="space-y-4 h-full">
@@ -132,9 +133,10 @@ export default function Products() {
               onPopup={notifyPopup}
               onDelete={() => setRefresh((prev) => prev + 1)}
               toggleVisible={() => setUpdateModalIsvisible((prev) => !prev)}
+              onUpdate={setProductSelected}
             />
             {allProducts.length > 5 && (
-              <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
+              <TablePagination onPrev={handlerPrev} onNext={handlerNext} />
             )}
           </div>
         )}
