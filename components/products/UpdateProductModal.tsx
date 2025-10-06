@@ -13,6 +13,7 @@ interface UpdateProductModalProps {
   product: Product | null;
   onToggle: () => void;
   onCreated: () => void;
+  onPopup: (message: string, type: "success"|"error") => void;
 }
 
 const updateProductSchema = z.object({
@@ -29,6 +30,7 @@ export const UpdateProductModal = ({
   product,
   onToggle,
   onCreated,
+  onPopup
 }: UpdateProductModalProps) => {
   const {
     handleSubmit,
@@ -64,6 +66,7 @@ export const UpdateProductModal = ({
       await updateProduct(productUpdate);
       onToggle();
       onCreated();
+      onPopup("Produto atualizado!", "success");
     } catch (err) {
       console.error(err);
       setError("root", {

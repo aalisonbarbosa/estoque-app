@@ -117,6 +117,7 @@ export default function Products() {
           onToggle={() => setUpdateModalIsvisible((prev) => !prev)}
           product={productSelected}
           onCreated={() => setRefresh((prev) => prev + 1)}
+          onPopup={notifyPopup}
         />
       )}
 
