@@ -14,9 +14,10 @@ type ProductTableProps = {
   products: Product[];
   onDelete: ()=> void;
   onPopup: (message: string, type: "success" | "error") => void;
+  toggleVisible: ()=> void;
 };
 
-export const ProductTable = ({ products, onPopup, onDelete }: ProductTableProps) => {
+export const ProductTable = ({ products, onPopup, onDelete, toggleVisible }: ProductTableProps) => {
   const { isAdmin } = useAuth();
 
   async function handleDelete(id: string) {
@@ -51,7 +52,7 @@ export const ProductTable = ({ products, onPopup, onDelete }: ProductTableProps)
             <td className="p-2">{product.price}</td>
             {isAdmin && (
               <td className="p-2">
-                Editar |{" "}
+                <button className="cursor-pointer" onClick={toggleVisible}>Editar</button> |
                 <button className="cursor-pointer" onClick={() => handleDelete(product.id)}>
                   Excluir
                 </button>

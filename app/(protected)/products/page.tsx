@@ -10,6 +10,8 @@ import { ProductTable } from "@/components/products/ProductTable";
 import { PaginationControls } from "@/components/ui/PaginationControls";
 import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
+import { Modal } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
 
 type Product = {
   id: string;
@@ -23,7 +25,10 @@ export default function Products() {
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isVisible, setIsvisible] = useState<boolean>(false);
+  const [createModalIsVisible, setCreateModalIsvisible] =
+    useState<boolean>(false);
+  const [updateModalIsvisible, setUpdateModalIsvisible] =
+    useState<boolean>(false);
 
   const [inicio, setInicio] = useState(0);
   const [fim, setFim] = useState(5);
@@ -59,7 +64,7 @@ export default function Products() {
   const productsSlice = allProducts.slice(inicio, fim);
 
   function toggleVisible() {
-    setIsvisible((prev) => !prev);
+    setCreateModalIsvisible((prev) => !prev);
   }
 
   function handlerPrev() {
@@ -97,7 +102,7 @@ export default function Products() {
 
   return (
     <>
-      {isVisible && (
+      {createModalIsVisible && (
         <CreateProductModal
           onToggle={toggleVisible}
           onCreated={() => setRefresh((prev) => prev + 1)}
@@ -105,14 +110,18 @@ export default function Products() {
         />
       )}
 
+      {updateModalIsvisible && (
+        <Modal>
+          <h1>oi</h1>
+          <button onClick={() => setUpdateModalIsvisible((prev) => !prev)}>
+            sair
+          </button>
+        </Modal>
+      )}
+
       <div className="space-y-4 h-full">
         <h1 className="text-2xl font-bold">Produtos</h1>
-        <button
-          onClick={toggleVisible}
-          className="bg-stone-500 hover:bg-stone-600 duration-300 text-white p-2 rounded-md cursor-pointer"
-        >
-          Novo Produto
-        </button>
+        <Button label="Novo produto" onClick={toggleVisible} />
 
         {allProducts.length === 0 ? (
           <p>Nenhum produto encontrado.</p>
@@ -122,6 +131,7 @@ export default function Products() {
               products={productsSlice}
               onPopup={notifyPopup}
               onDelete={() => setRefresh((prev) => prev + 1)}
+              toggleVisible={() => setUpdateModalIsvisible((prev) => !prev)}
             />
             {allProducts.length > 5 && (
               <PaginationControls onPrev={handlerPrev} onNext={handlerNext} />
