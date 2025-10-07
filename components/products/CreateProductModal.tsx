@@ -24,12 +24,12 @@ type Props = {
 export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState("");
   const { data: session } = useSession();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
@@ -58,7 +58,9 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
       onPopup("Produto criado!", "success");
     } catch (err) {
       console.error(err);
-      setError("Erro ao criar o produto. Por favor, tente novamente.");
+      setError("root", {
+        message: "Erro ao criar o produto. Por favor, tente novamente.",
+      });
     } finally {
       setLoading(false);
     }
@@ -138,7 +140,7 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
         {errors.categoryId && (
           <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
         )}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {errors.root && <p className="text-red-500 text-sm">{errors.root.message}</p>}
         <div className="flex items-center gap-4">
           <Button label="Cancelar" onClick={onToggle} type="button" />
           <Button

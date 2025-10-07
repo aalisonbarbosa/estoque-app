@@ -18,3 +18,13 @@ export const productSchema = z.object({
 });
 
 export type ProductSchema = z.infer<typeof productSchema>;
+
+export const updateProductSchema = z.object({
+  quantity: z.coerce
+    .number()
+    .int("A quantidade deve ser um número inteiro")
+    .min(1, "A quantidade deve ser pelo menos 1"),
+  price: z.coerce.number().min(0.1, "O preço deve ser no mínimo 0,1"),
+});
+
+export type UpdateProductSchema = z.infer<typeof updateProductSchema>;

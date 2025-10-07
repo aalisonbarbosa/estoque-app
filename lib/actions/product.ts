@@ -12,7 +12,7 @@ type Product = {
 }
 
 export async function createProduct(product: Product) {
-    return await prisma.product.create({
+    await prisma.product.create({
         data: product,
     });
 }
@@ -42,7 +42,7 @@ export async function getOutOfStockProducts(storeId: string) {
 }
 
 export async function deleteProduct(id: string) {
-    return await prisma.product.delete({
+    await prisma.product.delete({
         where: {
             id
         }
@@ -52,11 +52,11 @@ export async function deleteProduct(id: string) {
 type UpdateProductInput = {
     id: string;
     quantity: number;
-    price: number;
+    price?: number;
 }
 
 export async function updateProduct(product: UpdateProductInput) {
-    return await prisma.product.update({
+    await prisma.product.update({
         where: {
             id: product.id
         },
