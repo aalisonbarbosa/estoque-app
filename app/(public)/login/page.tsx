@@ -18,7 +18,6 @@ const loginSchema = z.object({
 type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -26,7 +25,8 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
@@ -42,13 +42,15 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-        setError("Email ou senha inválidos");
+        setError("root", { message: "Email ou senha inválidos" });
         return;
       }
 
       router.push("/");
     } catch (err: any) {
-      setError("Erro inesperado no servidor. Tente novamente mais tarde.");
+      setError("root", {
+        message: "Erro inesperado no servidor. Tente novamente mais tarde.",
+      });
       console.error(err);
     } finally {
       setLoading(false);
@@ -87,7 +89,7 @@ export default function LoginPage() {
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
-          {error && <p className="text-red-500">{error}</p>}
+          {errors.root && <p className="text-red-500">{errors.root.message}</p>}
           <Button
             customClass="w-full"
             label={loading ? "Carregando..." : "Entrar"}

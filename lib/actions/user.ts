@@ -10,7 +10,7 @@ type User = {
 }
 
 export async function createUser(user: User) {
-    return await prisma.user.create({
+    await prisma.user.create({
         data: {
             name: user.name,
             email: user.email,
@@ -37,7 +37,7 @@ export async function getUsersByStore(storeId: string) {
 }
 
 export async function deleteUser(email: string) {
-    return await prisma.user.delete({
+    await prisma.user.delete({
         where: {
             email,
         }

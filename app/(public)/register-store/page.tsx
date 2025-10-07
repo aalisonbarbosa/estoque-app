@@ -17,13 +17,13 @@ import { Button } from "@/components/ui/Button";
 export default function RegisterStorePage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
     trigger,
   } = useForm<StoreRegistrationSchema>({
@@ -31,7 +31,6 @@ export default function RegisterStorePage() {
   });
 
   async function onSubmit(formData: StoreRegistrationSchema) {
-    setErrorMessage(null);
     try {
       setLoading(true);
 
@@ -55,9 +54,9 @@ export default function RegisterStorePage() {
 
       router.push("/login");
     } catch (err) {
-      setErrorMessage(
-        "Erro inesperado no servidor. Tente novamente mais tarde."
-      );
+      setError("root", {
+        message: "Erro inesperado no servidor. Tente novamente mais tarde.",
+      });
       console.error(err);
     }
   }
@@ -167,9 +166,9 @@ export default function RegisterStorePage() {
                   </p>
                 )}
               </div>
-              {errorMessage && (
+              {errors.root && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative animate-fade-in">
-                  {errorMessage}
+                  {errors.root.message}
                 </div>
               )}
               <Button

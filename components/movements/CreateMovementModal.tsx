@@ -28,13 +28,13 @@ export const CreateMovementModal = ({
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(movementSchema),
   });
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState("");
   const { data: session } = useSession();
 
   const storeId = session?.user.storeId!;
@@ -70,7 +70,7 @@ export const CreateMovementModal = ({
       )?.quantity;
 
       if (existingQuantity === undefined) {
-        setError("Produto não encontrado");
+        setError("root", { type: "manual", message: "Produto não encontrado" });
         return;
       }
 
@@ -80,7 +80,10 @@ export const CreateMovementModal = ({
           : existingQuantity - formData.quantity;
 
       if (updatedQuantity < 0) {
-        setError("Quantidade insuficiente em estoque");
+        setError("root", {
+          type: "manual",
+          message: "Quantidade insuficiente em estoque",
+        });
         return;
       }
 
@@ -96,8 +99,11 @@ export const CreateMovementModal = ({
       onToggle();
       onPopup("Movimentação criada!", "success");
     } catch (err) {
-      console.error(err);
-      onPopup("Error ao criar movimentação!", "error");
+      console.error(err)
+      setError("root", {
+        type: "manual",
+        message: "Erro inesperado no servidor",
+      });
     } finally {
       setLoading(false);
     }
@@ -147,7 +153,9 @@ export const CreateMovementModal = ({
         {errors.quantity && (
           <p className="text-red-500 text-sm">{errors.quantity.message}</p>
         )}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {errors.root && (
+          <p className="text-red-500 text-sm">{errors.root.message}</p>
+        )}
         <div className="flex items-center gap-4">
           <Button label="Cancelar" onClick={onToggle} type="button" />
           <Button

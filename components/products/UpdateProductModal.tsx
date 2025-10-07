@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { updateProduct } from "@/lib/actions/product";
 import { useState } from "react";
+import { UpdateProductSchema, updateProductSchema } from "@/lib/schemas/product";
 
 interface UpdateProductModalProps {
   product: Product | null;
@@ -15,16 +16,6 @@ interface UpdateProductModalProps {
   onCreated: () => void;
   onPopup: (message: string, type: "success"|"error") => void;
 }
-
-const updateProductSchema = z.object({
-  quantity: z.coerce
-    .number()
-    .int("A quantidade deve ser um número inteiro")
-    .min(1, "A quantidade deve ser pelo menos 1"),
-  price: z.coerce.number().min(0.1, "O preço deve ser no mínimo 0,1"),
-});
-
-type UpdateProductSchema = z.infer<typeof updateProductSchema>;
 
 export const UpdateProductModal = ({
   product,
@@ -60,7 +51,8 @@ export const UpdateProductModal = ({
 
       const productUpdate: Product = {
         id: product?.id!,
-        ...formData,
+        quantity: formData.quantity,
+        price: formData.price
       };
 
       await updateProduct(productUpdate);
