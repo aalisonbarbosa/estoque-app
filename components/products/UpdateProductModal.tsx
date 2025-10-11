@@ -5,7 +5,6 @@ import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import { updateProduct } from "@/lib/actions/product";
 import { useState } from "react";
 import { UpdateProductSchema, updateProductSchema } from "@/lib/schemas/product";
@@ -78,7 +77,7 @@ export const UpdateProductModal = ({
         <input
           type="number"
           id="quantity"
-          className="p-2 w-full rounded-md shadow"
+          className="p-2 w-full rounded-md shadow mt-2"
           defaultValue={product?.quantity}
           {...register("quantity")}
         />
@@ -89,7 +88,7 @@ export const UpdateProductModal = ({
         <input
           type="number"
           id="price"
-          className="p-2 w-full rounded-md shadow"
+          className="p-2 w-full rounded-md shadow mt-2"
           defaultValue={product?.price}
           step="any"
           {...register("price")}

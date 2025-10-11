@@ -16,6 +16,16 @@ interface Admin {
     password: string;
 }
 
+export async function getStoreName(storeId: string) {
+    const store =  await prisma.store.findFirst({
+        where: {
+            id: storeId,
+        },
+    });
+
+    return store?.name || "";
+}
+
 export async function createStore(store: Store, admin: Admin) {
     if (await existingUser(admin.email)) {
         return;

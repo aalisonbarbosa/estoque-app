@@ -101,8 +101,7 @@ export const CreateMovementModal = ({
     } catch (err) {
       console.error(err)
       setError("root", {
-        type: "manual",
-        message: "Erro inesperado no servidor",
+        message: "Erro inesperado no servidor.",
       });
     } finally {
       setLoading(false);

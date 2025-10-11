@@ -11,13 +11,12 @@ import {
   storeRegistrationSchema,
   StoreRegistrationSchema,
 } from "@/lib/schemas/store";
-import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 export default function RegisterStorePage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -77,10 +76,9 @@ export default function RegisterStorePage() {
             <>
               <div className="space-y-2">
                 <h2 className="text-xl font-semibold">Informações da Loja</h2>
-                <input
+                <Input
                   type="text"
                   placeholder="Nome da Loja"
-                  className="w-full border rounded px-4 py-2"
                   {...register("storeName")}
                 />
                 {errors.storeName && (
@@ -88,10 +86,9 @@ export default function RegisterStorePage() {
                     {errors.storeName.message}
                   </p>
                 )}
-                <input
+                <Input
                   type="text"
                   placeholder="Endereço"
-                  className="w-full border rounded px-4 py-2"
                   {...register("address")}
                 />
                 {errors.address && (
@@ -99,10 +96,9 @@ export default function RegisterStorePage() {
                     {errors.address.message}
                   </p>
                 )}
-                <input
+                <Input
                   type="text"
                   placeholder="CNPJ (Opcional)"
-                  className="w-full border rounded px-4 py-2"
                   {...register("taxId")}
                 />
                 {errors.taxId && (
@@ -123,10 +119,9 @@ export default function RegisterStorePage() {
                 <h2 className="text-xl font-semibold">
                   Informações do Administrador
                 </h2>
-                <input
+                <Input
                   type="text"
                   placeholder="Nome"
-                  className="w-full border rounded px-4 py-2"
                   {...register("adminName")}
                 />
                 {errors.adminName && (
@@ -134,10 +129,9 @@ export default function RegisterStorePage() {
                     {errors.adminName.message}
                   </p>
                 )}
-                <input
+                <Input
                   type="email"
                   placeholder="Email"
-                  className="w-full border rounded px-4 py-2"
                   {...register("adminEmail")}
                 />
                 {errors.adminEmail && (
@@ -145,21 +139,11 @@ export default function RegisterStorePage() {
                     {errors.adminEmail.message}
                   </p>
                 )}
-                <div className="relative w-full">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Senha"
-                    className="w-full border rounded px-4 py-2"
-                    {...register("password")}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 cursor-pointer"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
+                <Input
+                  type="password"
+                  placeholder="Senha"
+                  {...register("password")}
+                />
                 {errors.password && (
                   <p className="text-red-500 text-sm">
                     {errors.password.message}

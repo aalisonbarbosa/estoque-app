@@ -18,7 +18,7 @@ import { Button } from "../ui/Button";
 type Props = {
   onToggle: () => void;
   onCreated: () => void;
-  onPopup: (message: string, type: "success" | "error") => void;
+  onPopup: (message: string, type?: "success" | "error") => void;
 };
 
 export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
@@ -38,7 +38,7 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   async function onSubmit(data: ProductSchema) {
     try {
       setLoading(true);
-      const supplier: Supplier = await createSupplier(data.supplierName);
+      const supplier: Supplier = await createSupplier(data.supplierName, session?.user.storeId);
 
       if (!session?.user.storeId) {
         throw new Error("Store ID não encontrado");
@@ -55,11 +55,11 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
 
       onCreated();
       onToggle();
-      onPopup("Produto criado!", "success");
+      onPopup("Produto criado!");
     } catch (err) {
       console.error(err);
       setError("root", {
-        message: "Erro ao criar o produto. Por favor, tente novamente.",
+        message: "Erro inesperado no servidor.",
       });
     } finally {
       setLoading(false);
@@ -140,7 +140,9 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
         {errors.categoryId && (
           <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
         )}
-        {errors.root && <p className="text-red-500 text-sm">{errors.root.message}</p>}
+        {errors.root && (
+          <p className="text-red-500 text-sm">{errors.root.message}</p>
+        )}
         <div className="flex items-center gap-4">
           <Button label="Cancelar" onClick={onToggle} type="button" />
           <Button

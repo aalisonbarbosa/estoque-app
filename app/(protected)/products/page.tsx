@@ -12,6 +12,7 @@ import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
 import { Button } from "@/components/ui/Button";
 import { UpdateProductModal } from "@/components/products/UpdateProductModal";
+import { usePopup } from "@/hooks/popup";
 
 type Product = {
   id: string;
@@ -37,9 +38,7 @@ export default function Products() {
 
   const [refresh, setRefresh] = useState(0);
 
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const {isPopupVisible, popupMessage, popupType, notifyPopup} = usePopup();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -81,17 +80,6 @@ export default function Products() {
       setInicio(inicio + 5);
       setFim(fim + 5);
     }
-  }
-
-  function notifyPopup(message: string, type: "success" | "error") {
-    setIsPopupVisible(true);
-
-    setPopupMessage(message);
-    setPopupType(type);
-
-    setTimeout(() => {
-      setIsPopupVisible(false);
-    }, 5000);
   }
 
   if (loading) {

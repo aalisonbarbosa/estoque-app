@@ -70,6 +70,7 @@ model Store {
   movements Movement[]
   products  Product[]
   users     User[]
+  Supplier  Supplier[]
 }
 
 model Product {
@@ -103,8 +104,8 @@ model Category {
 }
 
 model Supplier {
-  id   String @id @default(cuid())
-  name String
-  // storeId String
-  // store   Store   @relation(fields: [storeId], references: [id])
+  id      String @id @default(cuid())
+  name    String
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id])
 }

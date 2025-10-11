@@ -43,7 +43,7 @@ export const ProductTable = ({
     <table className="w-full text-left">
       <thead>
         <tr>
-          <td className="p-2 font-bold">Código</td>
+          <td className="p-2 font-bold hidden md:block">Código</td>
           <td className="p-2 font-bold">Nome</td>
           <td className="p-2 font-bold">Quantidade</td>
           <td className="p-2 font-bold">Preço</td>
@@ -53,7 +53,7 @@ export const ProductTable = ({
       <tbody>
         {products.map((product, index) => (
           <tr key={index} className="border-t border-black/20">
-            <td className="p-2">{product.id}</td>
+            <td className="p-2 hidden md:block">{product.id}</td>
             <td className="p-2">{product.name}</td>
             <td className="p-2">{product.quantity}</td>
             <td className="p-2">{product.price}</td>

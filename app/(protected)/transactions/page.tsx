@@ -12,6 +12,7 @@ import { MovementTable } from "@/types/types";
 import { Loading } from "@/components/ui/Loading";
 import { Popup } from "@/components/ui/Popup";
 import { Button } from "@/components/ui/Button";
+import { usePopup } from "@/hooks/popup";
 
 export default function Transactions() {
   const [allMovements, setAllMovements] = useState<MovementTable[]>([]);
@@ -26,9 +27,7 @@ export default function Transactions() {
 
   const [refresh, setRefresh] = useState(0);
 
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const { isPopupVisible, popupMessage, popupType, notifyPopup } = usePopup();
 
   useEffect(() => {
     async function fetchMovements() {
@@ -86,17 +85,6 @@ export default function Transactions() {
         <Loading />
       </div>
     );
-  }
-
-  function notifyPopup(message: string, type: "success" | "error") {
-    setIsPopupVisible(true);
-
-    setPopupMessage(message);
-    setPopupType(type);
-
-    setTimeout(() => {
-      setIsPopupVisible(false);
-    }, 5000);
   }
 
   return (
