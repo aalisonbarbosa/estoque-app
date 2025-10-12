@@ -7,7 +7,12 @@ import { useForm } from "react-hook-form";
 
 import { getCategories } from "@/lib/actions/category";
 import { createProduct } from "@/lib/actions/product";
-import { createSupplier } from "@/lib/actions/supplier";
+import {
+  createSupplier,
+  getSupplierByName,
+  getSuppliers,
+  supplierExists,
+} from "@/lib/actions/supplier";
 
 import { ProductSchema, productSchema } from "@/lib/schemas/product";
 
@@ -23,8 +28,11 @@ type Props = {
 
 export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session } = useSession();
+
+  const storeId = session?.user.storeId;
 
   const {
     register,
@@ -38,10 +46,18 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
   async function onSubmit(data: ProductSchema) {
     try {
       setLoading(true);
-      const supplier: Supplier = await createSupplier(data.supplierName, session?.user.storeId);
-
-      if (!session?.user.storeId) {
+      if (!storeId) {
         throw new Error("Store ID não encontrado");
+      }
+
+      const exists = await supplierExists(data.supplierName, storeId);
+
+      let supplier: Supplier;
+
+      if (!exists) {
+        supplier = await createSupplier(data.supplierName, storeId);
+      } else {
+        supplier = (await getSupplierByName(data.supplierName, storeId))!;
       }
 
       await createProduct({
@@ -50,7 +66,7 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
         price: data.price,
         categoryId: data.categoryId,
         supplierId: supplier.id,
-        storeId: session.user.storeId,
+        storeId: storeId,
       });
 
       onCreated();
@@ -77,7 +93,12 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
       }
     }
 
+    async function fetchSuplliers() {
+      setSuppliers(await getSuppliers(storeId!));
+    }
+
     fetchCategories();
+    fetchSuplliers();
   }, []);
 
   return (
@@ -116,8 +137,16 @@ export const CreateProductModal = ({ onToggle, onCreated, onPopup }: Props) => {
           type="text"
           placeholder="Fornecedor"
           className="p-2 w-full rounded-md shadow"
+          list="suppliers"
           {...register("supplierName")}
         />
+        <datalist id="suppliers">
+          {suppliers.map((supplier) => (
+            <option value={supplier.name} key={supplier.id}>
+              {supplier.name}
+            </option>
+          ))}
+        </datalist>
         {errors.supplierName && (
           <p className="text-red-500 text-sm">{errors.supplierName.message}</p>
         )}

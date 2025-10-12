@@ -13,6 +13,7 @@ import { Popup } from "@/components/ui/Popup";
 import { Button } from "@/components/ui/Button";
 import { UpdateProductModal } from "@/components/products/UpdateProductModal";
 import { usePopup } from "@/hooks/popup";
+import { useAuth } from "@/context/AuthContext";
 
 type Product = {
   id: string;
@@ -23,6 +24,7 @@ type Product = {
 
 export default function Products() {
   const { data: session } = useSession();
+  const { isAdmin } = useAuth();
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,7 +40,7 @@ export default function Products() {
 
   const [refresh, setRefresh] = useState(0);
 
-  const {isPopupVisible, popupMessage, popupType, notifyPopup} = usePopup();
+  const { isPopupVisible, popupMessage, popupType, notifyPopup } = usePopup();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -111,7 +113,7 @@ export default function Products() {
 
       <div className="space-y-4 h-full">
         <h1 className="text-2xl font-bold">Produtos</h1>
-        <Button label="Novo produto" onClick={toggleVisible} />
+        {isAdmin && <Button label="Novo produto" onClick={toggleVisible} />}
 
         {allProducts.length === 0 ? (
           <p>Nenhum produto encontrado.</p>
