@@ -64,7 +64,7 @@ export default function Products() {
     fetchProducts();
   }, [!session?.user.storeId, refresh]);
 
-  const productsSlice = allProducts.slice(inicio, fim);
+  const products = allProducts.slice(inicio, fim);
 
   function toggleVisible() {
     setCreateModalIsvisible((prev) => !prev);
@@ -120,7 +120,7 @@ export default function Products() {
         ) : (
           <div className="bg-white rounded-xl p-2">
             <ProductTable
-              products={productsSlice}
+              products={products}
               onPopup={notifyPopup}
               onDelete={() => setRefresh((prev) => prev + 1)}
               toggleVisible={() => setUpdateModalIsvisible((prev) => !prev)}

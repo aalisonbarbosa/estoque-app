@@ -17,7 +17,7 @@ interface Admin {
 }
 
 export async function getStoreName(storeId: string) {
-    const store =  await prisma.store.findFirst({
+    const store = await prisma.store.findFirst({
         where: {
             id: storeId,
         },

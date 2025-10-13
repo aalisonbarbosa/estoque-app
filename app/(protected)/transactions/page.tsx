@@ -60,7 +60,11 @@ export default function Transactions() {
   }, [session?.user.storeId, refresh]);
 
   const movements: MovementTable[] = allMovements.slice(inicio, fim);
-
+  
+  function toggleVisible() {
+    setIsvisible((prev) => !prev);
+  }
+  
   function handlerPrev() {
     if (inicio > 0) {
       setInicio(inicio - 5);
@@ -75,9 +79,6 @@ export default function Transactions() {
     }
   }
 
-  function toggleVisible() {
-    setIsvisible((prev) => !prev);
-  }
 
   if (loading) {
     return (
