@@ -49,7 +49,7 @@ export const Sidebar = () => {
       <aside
         className={`w-72 bg-white shadow-lg p-4 space-y-4 ${
           isOpen ? "max-md:translate-x-0" : "max-md:translate-x-full"
-        } max-md:fixed top-0 right-0 max-md:h-screen max-md:w-1/2 transition-transform duration-300 z-50`}
+        } sticky top-0 bottom-0 max-md:right-0 max-md:h-screen max-md:w-1/2 transition-transform duration-300 z-50`}
       >
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">EstoqueApp</h1>
@@ -92,21 +92,6 @@ export const Sidebar = () => {
                 </Link>
               </li>
             ))}
-            {isAdmin && (
-              <li>
-                <Link
-                  href="/settings"
-                  className={`block px-3 py-2 rounded-lg transition-colors ${
-                    pathname === "/settings"
-                      ? "bg-blue-50 text-blue-600 font-medium"
-                      : "text-gray-700 hover:text-blue-600"
-                  }`}
-                  onClick={() => setIsOpen((prev) => !prev)}
-                >
-                  Configurações
-                </Link>
-              </li>
-            )}
             {session && (
               <li>
                 <button

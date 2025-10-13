@@ -10,15 +10,14 @@ import { getUsersByStore } from "@/lib/actions/user";
 import { User } from "@/types/types";
 
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Settings() {
+export const UserManagement = () => {
   const { isAdmin } = useAuth();
 
-  if (!isAdmin) redirect("/");
-
   const { data: session } = useSession();
+
+  const storeId = session?.user.storeId;
 
   const [users, setUsers] = useState<User[]>([]);
   const [refresh, setRefresh] = useState(0);
@@ -27,7 +26,7 @@ export default function Settings() {
 
   useEffect(() => {
     async function getUsers() {
-      const res = await getUsersByStore(session?.user.storeId!);
+      const res = await getUsersByStore(storeId!);
 
       const formattedUser: User[] = res.map((user) => ({
         id: user.id,
@@ -42,9 +41,11 @@ export default function Settings() {
     getUsers();
   }, [refresh]);
 
+  if(!isAdmin) return null;
+
   return (
     <div className="space-y-4 h-full">
-      <h2 className="text-2xl font-bold">Usuários</h2>
+      <h2 className="text-xl font-bold">Usuários</h2>
       <UserForm setRefresh={setRefresh} onPopup={notifyPopup} />
 
       {users.length > 0 && (
