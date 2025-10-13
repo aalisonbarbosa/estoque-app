@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { auth } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { Sidebar } from "@/components/ui/Sidebar";
 
 
@@ -9,7 +9,7 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(auth);
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     redirect("/login");
