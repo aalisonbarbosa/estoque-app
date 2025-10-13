@@ -12,14 +12,14 @@ export const MovementsTable = ({
           <th className="p-2">Produto</th>
           <th className="p-2">Tipo</th>
           <th className="p-2">Qtd</th>
-          <th className="p-2">Data</th>
+          <th className="p-2 max-md:hidden">Data</th>
           <th className="p-2">Usuário</th>
         </tr>
       </thead>
       <tbody>
         {movements.map((m, index) => (
           <tr key={index} className="border-t border-black/20">
-            <td className="p-2">{m.productName}</td>
+            <td className="p-2 capitalize">{m.productName}</td>
             <td
               className={`p-2 ${
                 m.movementType === "expense" ? "text-red-500" : "text-green-500"}`}
@@ -27,8 +27,8 @@ export const MovementsTable = ({
               {m.movementType === "income" ? "Entrada" : "Saída"}
             </td>
             <td className="p-2">{m.quantity}</td>
-            <td className="p-2">{m.date}</td>
-            <td className="p-2">{m.userName}</td>
+            <td className="p-2 max-md:hidden">{m.date}</td>
+            <td className="p-2 capitalize">{m.userName}</td>
           </tr>
         ))}
       </tbody>

@@ -54,7 +54,7 @@ export const ProductTable = ({
         {products.map((product, index) => (
           <tr key={index} className="border-t border-black/20">
             <td className="p-2 hidden md:block">{product.id}</td>
-            <td className="p-2">{product.name}</td>
+            <td className="p-2 capitalize">{product.name}</td>
             <td className="p-2">{product.quantity}</td>
             <td className="p-2">{product.price}</td>
             {isAdmin && (

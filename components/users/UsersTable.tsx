@@ -37,7 +37,7 @@ export const UsersTable = ({ users, setRefresh, onPopup }: usersTableProps) => {
       <tbody>
         {users?.map((user) => (
           <tr key={user.id} className="border-t border-black/20">
-            <td className="p-2">{user.name}</td>
+            <td className="p-2 capitalize">{user.name}</td>
             <td className="p-2">{user.email}</td>
             <td className="p-2">{user.role}</td>
             {user.role !== "ADMIN" && (

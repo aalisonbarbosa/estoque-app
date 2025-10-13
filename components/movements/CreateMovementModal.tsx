@@ -121,7 +121,7 @@ export const CreateMovementModal = ({
             Escolha o produto
           </option>
           {products.map((p) => (
-            <option value={p.id} key={p.id}>
+            <option value={p.id} key={p.id} className="capitalize">
               {p.name}
             </option>
           ))}
