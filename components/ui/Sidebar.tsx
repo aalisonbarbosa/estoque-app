@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
 import { getStoreName } from "@/lib/actions/store";
 import { Menu, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -9,8 +8,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const Sidebar = () => {
-  const { isAdmin } = useAuth();
-
   const { data: session } = useSession();
   const pathname = usePathname();
 
@@ -49,7 +46,7 @@ export const Sidebar = () => {
       <aside
         className={`w-72 bg-white shadow-lg p-4 space-y-4 ${
           isOpen ? "max-md:translate-x-0" : "max-md:translate-x-full"
-        } sticky top-0 bottom-0 max-md:right-0 max-md:h-screen max-md:w-1/2 transition-transform duration-300 z-50`}
+        } md:sticky fixed top-0 bottom-0 max-md:right-0 max-md:h-screen max-md:w-1/2 transition-transform duration-300 z-50`}
       >
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">EstoqueApp</h1>
