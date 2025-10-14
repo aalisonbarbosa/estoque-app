@@ -29,11 +29,15 @@ export default function Transactions() {
 
   const { isPopupVisible, popupMessage, popupType, notifyPopup } = usePopup();
 
+  const storeId = session?.user.storeId;
+
   useEffect(() => {
     async function fetchMovements() {
       try {
+        if(!storeId) return;
+
         setLoading(true);
-        const res = (await getMovements(session?.user.storeId!)) ?? [];
+        const res = (await getMovements(storeId)) ?? [];
 
         const formatted: MovementTable[] = res.map((m) => ({
           productId: m.productId,
@@ -57,7 +61,7 @@ export default function Transactions() {
     }
 
     fetchMovements();
-  }, [session?.user.storeId, refresh]);
+  }, [storeId, refresh]);
 
   const movements: MovementTable[] = allMovements.slice(inicio, fim);
   

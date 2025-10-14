@@ -42,13 +42,15 @@ export default function Products() {
 
   const { isPopupVisible, popupMessage, popupType, notifyPopup } = usePopup();
 
+  const storeId = session?.user.storeId;
+
   useEffect(() => {
     async function fetchProducts() {
-      if (!session?.user.storeId) return;
+      if (!storeId) return;
 
       setLoading(true);
 
-      const products = (await getProducts(session.user.storeId)) ?? [];
+      const products = (await getProducts(storeId)) ?? [];
 
       const formatted: Product[] = products.map((p) => ({
         id: p.id,
@@ -62,7 +64,7 @@ export default function Products() {
     }
 
     fetchProducts();
-  }, [!session?.user.storeId, refresh]);
+  }, [storeId, refresh]);
 
   const products = allProducts.slice(inicio, fim);
 

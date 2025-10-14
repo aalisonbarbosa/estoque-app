@@ -26,7 +26,9 @@ export const UserManagement = () => {
 
   useEffect(() => {
     async function getUsers() {
-      const res = await getUsersByStore(storeId!);
+      if (!storeId) return;
+
+      const res = await getUsersByStore(storeId);
 
       const formattedUser: User[] = res.map((user) => ({
         id: user.id,
@@ -39,9 +41,9 @@ export const UserManagement = () => {
     }
 
     getUsers();
-  }, [refresh]);
+  }, [refresh, storeId]);
 
-  if(!isAdmin) return null;
+  if (!isAdmin) return null;
 
   return (
     <div className="space-y-4 h-full">
@@ -63,4 +65,4 @@ export const UserManagement = () => {
       />
     </div>
   );
-}
+};
