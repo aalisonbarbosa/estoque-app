@@ -47,16 +47,16 @@ export const UserManagement = () => {
 
   return (
     <div className="space-y-4 h-full">
-      <h2 className="text-xl font-bold">Usuários</h2>
-      <UserForm setRefresh={setRefresh} onPopup={notifyPopup} />
-
+      <h2 className="text-xl font-bold">Funcionários</h2>
       {users.length > 0 && (
         <UsersTable
-          users={users}
-          setRefresh={setRefresh}
-          onPopup={notifyPopup}
+        users={users}
+        setRefresh={setRefresh}
+        onPopup={notifyPopup}
         />
       )}
+
+      <UserForm setRefresh={setRefresh} onPopup={notifyPopup} />
 
       <Popup
         isPopupVisible={isPopupVisible}

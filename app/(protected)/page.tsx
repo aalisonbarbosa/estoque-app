@@ -19,11 +19,13 @@ export default function Dashboard() {
 
   const { data: session } = useSession();
 
-  const storeId = session?.user.storeId!;
+  const storeId = session?.user.storeId;
 
   useEffect(() => {
     async function fetchMovements() {
       try {
+        if(!storeId) return;
+
         const res = (await getMovements(storeId)) ?? [];
 
         const formatted: MovementTable[] = res.map((m) => ({
@@ -51,6 +53,8 @@ export default function Dashboard() {
 
     async function getDashboardStats() {
       try {
+        if(!storeId) return;
+        
         setTotalProducts(await getQtdProducts(storeId));
         setTodayMovements(await getTodayMovements(storeId));
         setOutOfStockProducts(await getOutOfStockProducts(storeId));
@@ -61,7 +65,7 @@ export default function Dashboard() {
 
     fetchMovements();
     getDashboardStats();
-  }, []);
+  }, [storeId]);
 
   const movement = allMovements.slice(0, 3);
 
@@ -76,9 +80,7 @@ export default function Dashboard() {
           </div>
           <div className="bg-white rounded-md p-4 shadow">
             Produtos em Falta:
-            <span className="font-bold text-red-500">
-              {outOfStockProducts}
-            </span>
+            <span className="font-bold text-red-500"> {outOfStockProducts}</span>
           </div>
           <div className="bg-white rounded-md p-4 shadow">
             Movimentações Hoje:

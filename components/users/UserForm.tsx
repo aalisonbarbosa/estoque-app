@@ -87,13 +87,10 @@ export const UserForm = ({ setRefresh, onPopup }: UserFormProps) => {
         <p className="text-sm text-red-500">{errors.root.message}</p>
       )}
       <Button
-        label={loading ? "Carregando..." : "Criar usuário"}
+        label={loading ? "Carregando..." : "Criar funcionário"}
         type="submit"
         disabled={loading}
       />
     </form>
   );
 };
-function setLoading(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

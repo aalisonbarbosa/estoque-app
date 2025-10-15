@@ -30,7 +30,7 @@ export const UsersTable = ({ users, setRefresh, onPopup }: usersTableProps) => {
         <tr>
           <th className="p-2">Nome</th>
           <th className="p-2">Email</th>
-          <th className="p-2">Nível</th>
+          <th className="p-2 max-md:hidden">Nível</th>
           {users.length > 1 && <th className="p-2">Ações</th>}
         </tr>
       </thead>
@@ -39,7 +39,7 @@ export const UsersTable = ({ users, setRefresh, onPopup }: usersTableProps) => {
           <tr key={user.id} className="border-t border-black/20">
             <td className="p-2 capitalize">{user.name}</td>
             <td className="p-2">{user.email}</td>
-            <td className="p-2">{user.role}</td>
+            <td className="p-2 max-md:hidden">{user.role}</td>
             {user.role !== "ADMIN" && (
               <td className="p-2">
                 <button
